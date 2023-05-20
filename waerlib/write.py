@@ -18,7 +18,8 @@ def validate_df(df):
     
     return df
 
-def write(df, bucket, folder):
+def write(user_id, df, bucket, folder):
+    df.loc[:,'user_id'] = user_id
     df = validate_df(df)
     pq.write_to_dataset(
         pa.Table.from_pandas(df),

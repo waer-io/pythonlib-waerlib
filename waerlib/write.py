@@ -18,7 +18,7 @@ def validate_df(df):
     df.loc[:,'key'] = df.loc[:,'key'].astype(str)
     df.loc[:,'val'] = df.loc[:,'val'].astype(str)
     df.loc[:,'version'] = df.loc[:,'version'].astype(str)
-    df.loc[:,'month'] = df.loc[:,'timestamp'].dt.date.astype(str).str.slice(0,7)
+    df.loc[:,'month'] = df.loc[:,'timestamp'].astype(str).astype(str).str.slice(0,7)
     
     return df
 

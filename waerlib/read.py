@@ -4,7 +4,6 @@ import pyarrow.flight as flight
 #ALTER TABLE test REFRESH METADATA;
 
 def read(user_id, beg_time, end_time, tags, collection):
-    #host, port, username, password
     host = os.environ['DREMIO_HOST']
     username = os.environ['DREMIO_USERNAME']
     password = os.environ['DREMIO_PASSWORD']

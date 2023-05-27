@@ -1,8 +1,6 @@
 import os
 import pyarrow.flight as flight
 
-#ALTER TABLE test REFRESH METADATA;
-
 def read(user_id, beg_time, end_time, tags, collection):
     host = os.environ['DREMIO_HOST']
     username = os.environ['DREMIO_USERNAME']
@@ -10,7 +8,13 @@ def read(user_id, beg_time, end_time, tags, collection):
 
     client = flight.FlightClient(f'grpc+tcp://{host}:32010/grpc')
     token = client.authenticate_basic_token(username, password)
+    options = flight.FlightCallOptions(headers=[token])
 
+    #query = f'''ALTER TABLE {collection} REFRESH METADATA;'''
+    #flight_info = client.get_flight_info(flight.FlightDescriptor.for_command(query), options)
+    #reader = client.do_get(flight_info.endpoints[0].ticket, options)
+    #df = reader.read_pandas()
+    
     query = f'''
     SELECT * FROM datalake.{collection}
     WHERE "dir0"='user_id={user_id}'
@@ -20,7 +24,6 @@ def read(user_id, beg_time, end_time, tags, collection):
     AND "timestamp">='{beg_time}'
     AND "timestamp"<='{end_time}'
     '''
-    options = flight.FlightCallOptions(headers=[token])
     flight_info = client.get_flight_info(flight.FlightDescriptor.for_command(query), options)
     reader = client.do_get(flight_info.endpoints[0].ticket, options)
 

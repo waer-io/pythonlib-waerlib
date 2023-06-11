@@ -11,7 +11,7 @@ def read(user_id, beg_time, end_time, tags, collection):
     options = flight.FlightCallOptions(headers=[token])
 
     # USE THIS IN THE FUTURE
-    if false:
+    if False:
         query = f'''ALTER TABLE datalake.{collection} REFRESH METADATA;'''
         flight_info = client.get_flight_info(flight.FlightDescriptor.for_command(query), options)
         reader = client.do_get(flight_info.endpoints[0].ticket, options)

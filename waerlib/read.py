@@ -1,4 +1,5 @@
 import os
+import pandas as pd
 import pyarrow.flight as flight
 
 def read(user_id, beg_time, end_time, tags, collection):
@@ -11,7 +12,7 @@ def read(user_id, beg_time, end_time, tags, collection):
     options = flight.FlightCallOptions(headers=[token])
 
     # USE THIS IN THE FUTURE
-    if False:
+    if True:
         query = f'''ALTER TABLE datalake.{collection} REFRESH METADATA;'''
         flight_info = client.get_flight_info(flight.FlightDescriptor.for_command(query), options)
         reader = client.do_get(flight_info.endpoints[0].ticket, options)
@@ -23,8 +24,8 @@ def read(user_id, beg_time, end_time, tags, collection):
     AND RIGHT("dir1",7)>='{beg_time[:7]}'
     AND RIGHT("dir1",7)<='{end_time[:7]}'
     AND "key" IN ({','.join(["'" + i + "'" for i in tags])})
-    AND "timestamp">='{beg_time}'
-    AND "timestamp"<='{end_time}'
+    AND "timestamp">='{pd.to_datetime([beg_time]).astype('datetime64[us]').astype(int)[0]}'
+    AND "timestamp"<='{pd.to_datetime([end_time]).astype('datetime64[us]').astype(int)[0]}'
     '''
     flight_info = client.get_flight_info(flight.FlightDescriptor.for_command(query), options)
     reader = client.do_get(flight_info.endpoints[0].ticket, options)
@@ -33,7 +34,7 @@ def read(user_id, beg_time, end_time, tags, collection):
     df = df.rename(columns={'dir0':'user_id'})
     df = df.drop(['dir1'], axis=1)
     df.user_id = df.user_id.map(lambda x: x.split('user_id=')[1])
-    
+    df = pd.to_datetime(df.timestamp*1000)
     return df
 
 

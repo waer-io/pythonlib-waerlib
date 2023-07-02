@@ -14,19 +14,17 @@ def validate_df(df):
     assert 'version' in df.columns, 'Column "version" not in df'
     assert len(df.columns) == 4, 'Invalid columns in df'
 
-    df.loc[:,'timestamp'] = pd.to_datetime(df.loc[:,'timestamp']).astype('datetime64[s]')
+    df.loc[:,'timestamp'] = pd.to_datetime(df.loc[:,'timestamp'])
     df.loc[:,'key'] = df.loc[:,'key'].astype(str)
     df.loc[:,'val'] = df.loc[:,'val'].astype(str)
     df.loc[:,'version'] = df.loc[:,'version'].astype(str)
     df.loc[:,'month'] = df.loc[:,'timestamp'].astype(str).astype(str).str.slice(0,7)
+    df.loc[:,'timestamp'] = df.loc[:,'timestamp'].astype('datetime64[us]').astype(int)
     
     return df
 
 def write(user_id, df, folder):
-    print('XXXXXXXXXXXXXXXXXXXXX',flush=True)
-    print(df,flush=True)
     df = validate_df(df)
-    print(df,flush=True)
     df.loc[:,'user_id'] = user_id
     pq.write_to_dataset(
         pa.Table.from_pandas(df),

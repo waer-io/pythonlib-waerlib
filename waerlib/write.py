@@ -23,7 +23,7 @@ def validate_df(df):
     return df
 
 def write(user_id, df, folder):
-    print('XXXXXXXXXXXXXXXWRITING',flush=True)
+    print('XXXXXXXXXXXXXXXXXXXXX',flush=True)
     print(df,flush=True)
     df = validate_df(df)
     print(df,flush=True)

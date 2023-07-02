@@ -11,13 +11,13 @@ def read(user_id, beg_time, end_time, tags, collection):
     token = client.authenticate_basic_token(username, password)
     options = flight.FlightCallOptions(headers=[token])
 
-    # USE THIS IN THE FUTURE
-    if True:
-        query = f'''ALTER TABLE datalake.{collection} REFRESH METADATA;'''
-        flight_info = client.get_flight_info(flight.FlightDescriptor.for_command(query), options)
-        reader = client.do_get(flight_info.endpoints[0].ticket, options)
-        df = reader.read_pandas()
-    
+    # Update metadata
+    query = f'''ALTER TABLE datalake.{collection} REFRESH METADATA;'''
+    flight_info = client.get_flight_info(flight.FlightDescriptor.for_command(query), options)
+    reader = client.do_get(flight_info.endpoints[0].ticket, options)
+    df = reader.read_pandas()
+
+    # Query data
     query = f'''
     SELECT * FROM datalake.{collection}
     WHERE "dir0"='user_id={user_id}'
@@ -34,7 +34,7 @@ def read(user_id, beg_time, end_time, tags, collection):
     df = df.rename(columns={'dir0':'user_id'})
     df = df.drop(['dir1'], axis=1)
     df.user_id = df.user_id.map(lambda x: x.split('user_id=')[1])
-    df = pd.to_datetime(df.timestamp*1000)
+    df.timestamp = pd.to_datetime(df.timestamp*1000)
     return df
 
 

@@ -10,4 +10,4 @@ if __name__ == '__main__':
     df.loc[:,'key'] = ['sleep','activity','sleep','activity','sleep','activity']
     df.loc[:,'val'] = [100,200,300,400,500,600]
     df.loc[:,'version'] = 'test'
-    df = waerlib.write('123', df, 'profiles')
+    df = waerlib.write('123', df, 'parsed')

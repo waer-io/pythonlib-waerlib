@@ -26,6 +26,7 @@ def validate_df(df):
 def write(user_id, df, folder):
     df = validate_df(df)
     df.loc[:,'user_id'] = user_id
+    df = df.set_index('timestamp')
     pq.write_to_dataset(
         pa.Table.from_pandas(df),
         root_path=f"{os.environ['GCP_BUCKET_NAME']}/{folder}",

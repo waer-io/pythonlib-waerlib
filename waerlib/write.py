@@ -14,7 +14,7 @@ def validate_df(df):
     assert 'version' in df.columns, 'Column "version" not in df'
     assert len(df.columns) == 4, 'Invalid columns in df'
 
-    df.loc[:,'timestamp'] = pd.to_datetime(df.loc[:,'timestamp'])
+    df.loc[:,'timestamp'] = pd.to_datetime(df.loc[:,'timestamp']).astype('datetime64[s]')
     df.loc[:,'key'] = df.loc[:,'key'].astype(str)
     df.loc[:,'val'] = df.loc[:,'val'].astype(str)
     df.loc[:,'version'] = df.loc[:,'version'].astype(str)

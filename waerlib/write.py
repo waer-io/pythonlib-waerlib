@@ -23,7 +23,10 @@ def validate_df(df):
     return df
 
 def write(user_id, df, folder):
+    print('XXXXXXXXXXXXXXXWRITING',flush=True)
+    print(df,flush=True)
     df = validate_df(df)
+    print(df,flush=True)
     df.loc[:,'user_id'] = user_id
     pq.write_to_dataset(
         pa.Table.from_pandas(df),

@@ -3,6 +3,7 @@ import json
 
 # Thread-local storage
 import threading
+import uuid
 
 """
     See example/logging_config.py for example usage.
@@ -48,6 +49,24 @@ def setup_logging():
     logging.basicConfig(level=log_level, handlers=[stdout_handler])
 
 
+def setup_active_request(request, app):
+    request_id = request.headers.get(get_request_id_header_key())
+
+    if request_id is None:
+        request_id = str(uuid.uuid4())
+        app.logger.warning(f"Received endpoint {request.path} without a request id. Created one: {request_id}")
+
+    app.logger.debug(f"Request: {request.scheme} {request.method} {request.full_path} [{request_id}]")
+
+    store_request_id(request_id)
+
+
+def clear_active_request(response, app):
+    del_current_request_id()
+    del_current_user_id()
+    app.logger.debug(f"Response: {response.code} [{get_request_id()}]")
+
+
 def get_request_id():
     return getattr(local_storage, 'request_id', undefined_id)
 
@@ -71,9 +90,6 @@ def store_request_id(request_id):
 def store_user_id(user_id):
     local_storage.user_id = user_id
 
-def clear_active_request():
-    del_current_request_id()
-    del_current_user_id()
 
 def del_current_request_id():
     if hasattr(local_storage, 'request_id'):

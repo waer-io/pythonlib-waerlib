@@ -18,7 +18,7 @@ def read(user_id, beg_time, end_time, tags, collection, dedup=False):
     df = reader.read_pandas()
 
     # Query data
-    if dedup=False:
+    if dedup==False:
         query = f'''
         SELECT * FROM datalake.{collection}
         WHERE "dir0"='user_id={user_id}'

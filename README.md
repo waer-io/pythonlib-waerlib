@@ -30,4 +30,5 @@ See the `example` folder for example usage of each of the waerlib functions.
 python ./examples/read.py
 python ./examples/store_raw.py
 python ./examples/write.py
+python ./examples/logging_config.py
 ```

@@ -87,8 +87,9 @@ def store_request_id(request_id):
     local_storage.request_id = request_id
 
 
-def store_user_id(user_id):
+def store_user_id(app, user_id):
     local_storage.user_id = user_id
+    app.logger.debug(f"Set user_id: {user_id} [{get_request_id()}]")
 
 
 def del_current_request_id():

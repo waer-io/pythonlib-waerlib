@@ -71,6 +71,9 @@ def store_request_id(request_id):
 def store_user_id(user_id):
     local_storage.user_id = user_id
 
+def clear_active_request():
+    del_current_request_id()
+    del_current_user_id()
 
 def del_current_request_id():
     if hasattr(local_storage, 'request_id'):

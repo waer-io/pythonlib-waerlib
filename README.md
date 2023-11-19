@@ -27,8 +27,8 @@ pip install git+https://git@github.com/waer-io/pythonlib-waerlib.git
 See the `example` folder for example usage of each of the waerlib functions.
 
 ```
-python ./examples/read.py
-python ./examples/store_raw.py
-python ./examples/write.py
-python ./examples/logging_config.py
+python ./example/read.py
+python ./example/store_raw.py
+python ./example/write.py
+python ./example/logging_config.py
 ```

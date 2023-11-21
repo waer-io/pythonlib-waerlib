@@ -64,7 +64,7 @@ def setup_active_request(request, app):
 def clear_active_request(response, app):
     del_current_request_id()
     del_current_user_id()
-    app.logger.debug(f"Response: {response.code} [{get_request_id()}]")
+    app.logger.debug(f"Response: {response.status} [{get_request_id()}]")
 
 
 def get_request_id():

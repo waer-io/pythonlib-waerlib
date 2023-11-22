@@ -53,6 +53,7 @@ def setup_logging(service=""):
 
 def setup_active_request(request, app):
     request_id = request.headers.get(get_request_id_header_key())
+    store_request_id(request_id)
 
     if request_id is None:
         request_id = str(uuid.uuid4())
@@ -60,7 +61,6 @@ def setup_active_request(request, app):
 
     app.logger.debug(f"Request: {request.scheme} {request.method} {request.full_path} [{request_id}]")
 
-    store_request_id(request_id)
 
 
 def clear_active_request(response, app):

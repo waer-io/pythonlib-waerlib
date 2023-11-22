@@ -30,7 +30,8 @@ class StructuredFormatter(logging.Formatter):
             'pathname': record.pathname,
             'lineno': record.lineno,
             'request_id': get_request_id(),
-            'user_id': get_user_id()
+            'user_id': get_user_id(),
+            'waer_service': get_service_name()
         }
 
         # Exception info, if there is any
@@ -39,7 +40,8 @@ class StructuredFormatter(logging.Formatter):
         return json.dumps(structured_record)
 
 
-def setup_logging():
+def setup_logging(service=""):
+    store_service_name(service)
     log_level = logging.DEBUG
 
     stdout_handler = logging.StreamHandler()
@@ -67,6 +69,9 @@ def clear_active_request(response, app):
     del_current_user_id()
 
 
+def get_service_name():
+    return getattr(local_storage, 'service_name', undefined_id)
+
 def get_request_id():
     return getattr(local_storage, 'request_id', undefined_id)
 
@@ -82,6 +87,9 @@ def get_request_id_header_key():
 def get_user_id_key():
     return "user_id"
 
+
+def store_service_name(service_name):
+    local_storage.service_name = service_name
 
 def store_request_id(request_id):
     local_storage.request_id = request_id

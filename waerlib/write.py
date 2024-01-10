@@ -46,3 +46,29 @@ def store_raw(data):
     blob = bucket.blob(fname)
     with blob.open(mode='w') as f:
         f.write(json.dumps(data))
+
+
+gcs_filesystem = fs.GcsFileSystem()
+def write_with_reuse_client(user_id, df, folder):
+    df = validate_df(df)
+    df.loc[:,'user_id'] = user_id
+    df = df.set_index('timestamp')
+    pq.write_to_dataset(
+        pa.Table.from_pandas(df),
+        root_path=f"{os.environ['GCP_BUCKET_NAME']}/{folder}",
+        partition_cols=['user_id', 'month'],
+        filesystem=gcs_filesystem
+    )
+
+storage_client = storage.Client(project=os.environ['GCP_PROJECT_ID'])
+def store_raw_with_reuse_client(data):
+    bucket = storage_client.get_bucket(os.environ['GCP_BUCKET_NAME'])
+
+    fname = str(uuid.uuid4())
+    if data.get('user') and data['user'].get('user_id'):
+        fname = 'terraUID-' + data['user']['user_id'] + '~' + fname
+    fname = 'raw/' + fname
+
+    blob = bucket.blob(fname)
+    with blob.open(mode='w') as f:
+        f.write(json.dumps(data))

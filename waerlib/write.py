@@ -48,7 +48,7 @@ def store_raw(data):
         f.write(json.dumps(data))
 
 
-gcs_filesystem = fs.GcsFileSystem()
+gcs_filesystem_reused = fs.GcsFileSystem()
 def write_with_reuse_client(user_id, df, folder):
     df = validate_df(df)
     df.loc[:,'user_id'] = user_id
@@ -57,12 +57,12 @@ def write_with_reuse_client(user_id, df, folder):
         pa.Table.from_pandas(df),
         root_path=f"{os.environ['GCP_BUCKET_NAME']}/{folder}",
         partition_cols=['user_id', 'month'],
-        filesystem=gcs_filesystem
+        filesystem=gcs_filesystem_reused
     )
 
-storage_client = storage.Client(project=os.environ['GCP_PROJECT_ID'])
+storage_client_reused = storage.Client(project=os.environ['GCP_PROJECT_ID'])
 def store_raw_with_reuse_client(data):
-    bucket = storage_client.get_bucket(os.environ['GCP_BUCKET_NAME'])
+    bucket = storage_client_reused.get_bucket(os.environ['GCP_BUCKET_NAME'])
 
     fname = str(uuid.uuid4())
     if data.get('user') and data['user'].get('user_id'):

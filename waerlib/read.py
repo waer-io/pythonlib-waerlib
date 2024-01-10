@@ -7,6 +7,7 @@ def read(user_id, beg_time, end_time, tags, collection, dedup=False):
     username = os.environ['DREMIO_USERNAME']
     password = os.environ['DREMIO_PASSWORD']
 
+
     client = flight.FlightClient(f'grpc+tcp://{host}:32010/grpc')
     token = client.authenticate_basic_token(username, password)
     options = flight.FlightCallOptions(headers=[token])

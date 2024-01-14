@@ -40,15 +40,25 @@ class StructuredFormatter(logging.Formatter):
         return json.dumps(structured_record)
 
 
-def setup_logging(service=""):
-    store_service_name(service)
+def setup_logging(service="undefined-service"):
     log_level = logging.DEBUG
+    formatter = StructuredFormatter()
+    handlers = [
+        logging.StreamHandler(),
+        # later we'll add prometheus here
+    ]
 
-    stdout_handler = logging.StreamHandler()
-    stdout_handler.setLevel(log_level)
-    stdout_handler.setFormatter(StructuredFormatter())
+    for handler in handlers:
+        handler.setLevel(log_level)
+        handler.setFormatter(formatter)
 
-    logging.basicConfig(level=log_level, handlers=[stdout_handler])
+    logger = logging.getLogger(service)
+    logger.setLevel(log_level)
+    logger.handlers = handlers
+
+    store_service_name(service)
+
+    return logger
 
 
 def setup_active_request(request, app):

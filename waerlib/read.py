@@ -13,10 +13,14 @@ def read(user_id, beg_time, end_time, tags, collection, dedup=False):
     options = flight.FlightCallOptions(headers=[token])
 
     # Update metadata
-    query = f'''ALTER TABLE datalake.{collection} REFRESH METADATA;'''
-    flight_info = client.get_flight_info(flight.FlightDescriptor.for_command(query), options)
-    reader = client.do_get(flight_info.endpoints[0].ticket, options)
-    df = reader.read_pandas()
+    # Commented as this makes every query 30s+. We currently are trying to
+    # get quick responses over getting the responses updated quick.
+    # We'll test out if this works, and if yes, we might have a separate cronjob
+    # for refreshing more often.
+    #query = f'''ALTER TABLE datalake.{collection} REFRESH METADATA;'''
+    #flight_info = client.get_flight_info(flight.FlightDescriptor.for_command(query), options)
+    #reader = client.do_get(flight_info.endpoints[0].ticket, options)
+    #df = reader.read_pandas()
 
     # Query data
     if dedup==False:

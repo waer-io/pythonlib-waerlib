@@ -5,7 +5,7 @@ import pyarrow.flight as flight
 
 
 
-def refresh_collections():
+def refresh_collections(beg_time):
     """
     Refreshes metadata for specified collections in a Dremio datalake using Apache Arrow Flight.
 
@@ -17,8 +17,6 @@ def refresh_collections():
     username = os.environ['DREMIO_USERNAME']
     password = os.environ['DREMIO_PASSWORD']
 
-
-    flight_client = None
     try:
         flight_client = flight.FlightClient(f'grpc+tcp://{host}:32010/grpc')
         token = flight_client.authenticate_basic_token(username, password)
@@ -37,9 +35,6 @@ def refresh_collections():
     except Exception as e:
         print(f"An error occurred refreshing metadata: {e}")
         return False
-    finally:
-        if flight_client:
-            flight_client.close()
 
 
 def read(user_id, beg_time, end_time, tags, collection, dedup=False):
@@ -53,14 +48,10 @@ def read(user_id, beg_time, end_time, tags, collection, dedup=False):
     options = flight.FlightCallOptions(headers=[token])
 
     # Update metadata
-    # Commented as this makes every query 30s+. We currently are trying to
-    # get quick responses over getting the responses updated quick.
-    # We'll test out if this works, and if yes, we might have a separate cronjob
-    # for refreshing more often.
-    #query = f'''ALTER TABLE datalake.{collection} REFRESH METADATA;'''
-    #flight_info = client.get_flight_info(flight.FlightDescriptor.for_command(query), options)
-    #reader = client.do_get(flight_info.endpoints[0].ticket, options)
-    #df = reader.read_pandas()
+    query = f'''ALTER TABLE datalake.{collection} REFRESH METADATA;'''
+    flight_info = client.get_flight_info(flight.FlightDescriptor.for_command(query), options)
+    reader = client.do_get(flight_info.endpoints[0].ticket, options)
+    df = reader.read_pandas()
 
     # Query data
     if dedup==False:

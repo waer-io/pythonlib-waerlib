@@ -9,7 +9,7 @@ def refresh_collections():
     Ensures we get latest data.
     """
 
-    collections = ['parsed', 'outputs', 'profiles', 'samples']
+    collections = ['profiles', 'outputs', 'samples', 'parsed']
     host = os.environ['DREMIO_HOST']
     username = os.environ['DREMIO_USERNAME']
     password = os.environ['DREMIO_PASSWORD']
@@ -26,6 +26,7 @@ def refresh_collections():
             flight_info = client.get_flight_info(flight.FlightDescriptor.for_command(query), options)
             with client.do_get(flight_info.endpoints[0].ticket, options) as reader:
                 print(f"Refreshed metadata successfully for {collection}")
+                df = reader.read_pandas()
 
         print("Metadata refresh completed.")
         return True

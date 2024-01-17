@@ -21,7 +21,7 @@ def refresh_collections():
         options = flight.FlightCallOptions(headers=[token])
 
         for collection in collections:
-            query = f'ALTER TABLE datalake.{collection} REFRESH METADATA;'
+            query = f'''ALTER TABLE datalake.{collection} REFRESH METADATA;'''
             print(f"Refreshing metadata for {collection}")
             flight_info = client.get_flight_info(flight.FlightDescriptor.for_command(query), options)
             with client.do_get(flight_info.endpoints[0].ticket, options) as reader:

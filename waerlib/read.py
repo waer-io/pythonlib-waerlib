@@ -16,17 +16,17 @@ def refresh_collections():
     password = os.environ['DREMIO_PASSWORD']
 
 
-   client = None
+   flight_client = None
     try:
-        client = flight.FlightClient(f'grpc+tcp://{host}:32010/grpc')
-        token = client.authenticate_basic_token(username, password)
+        flight_client = flight.FlightClient(f'grpc+tcp://{host}:32010/grpc')
+        token = flight_client.authenticate_basic_token(username, password)
         options = flight.FlightCallOptions(headers=[token])
 
         for collection in collections:
             query = f'''ALTER TABLE datalake.{collection} REFRESH METADATA;'''
             logging.info(f"Refreshing metadata for {collection}")
-            flight_info = client.get_flight_info(flight.FlightDescriptor.for_command(query), options)
-            reader = client.do_get(flight_info.endpoints[0].ticket, options)
+            flight_info = flight_client.get_flight_info(flight.FlightDescriptor.for_command(query), options)
+            reader = flight_client.do_get(flight_info.endpoints[0].ticket, options)
             # Process reader if needed here
             # Close after each attempt
             reader.close()
@@ -37,6 +37,9 @@ def refresh_collections():
     except Exception as e:
         print(f"An error occurred refreshing metadata: {e}")
         return False
+    finally:
+        if flight_client:
+            flight_client.close()
 
 
 def read(user_id, beg_time, end_time, tags, collection, dedup=False):

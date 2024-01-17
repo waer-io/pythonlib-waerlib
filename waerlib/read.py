@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import pyarrow.flight as flight
 
+
 def refresh_collections():
     """
     Refreshes metadata for specified collections in a Dremio datalake using Apache Arrow Flight.
@@ -15,6 +16,7 @@ def refresh_collections():
     password = os.environ['DREMIO_PASSWORD']
 
 
+   client = None
     try:
         client = flight.FlightClient(f'grpc+tcp://{host}:32010/grpc')
         token = client.authenticate_basic_token(username, password)
@@ -22,11 +24,12 @@ def refresh_collections():
 
         for collection in collections:
             query = f'''ALTER TABLE datalake.{collection} REFRESH METADATA;'''
-            print(f"Refreshing metadata for {collection}")
+            logging.info(f"Refreshing metadata for {collection}")
             flight_info = client.get_flight_info(flight.FlightDescriptor.for_command(query), options)
-            with client.do_get(flight_info.endpoints[0].ticket, options) as reader:
-                print(f"Refreshed metadata successfully for {collection}")
-                df = reader.read_pandas()
+            reader = client.do_get(flight_info.endpoints[0].ticket, options)
+            # Process reader if needed here
+            # Close after each attempt
+            reader.close()
 
         print("Metadata refresh completed.")
         return True

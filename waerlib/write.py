@@ -48,8 +48,10 @@ def store_raw(data):
         f.write(json.dumps(data))
 
 
-gcs_filesystem_reused = fs.GcsFileSystem()
+gcs_filesystem_reused = None
 def write_with_reuse_client(user_id, df, folder):
+    if gcs_filesystem_reused is None:
+        gcs_filesystem_reused = fs.GcsFileSystem()
     df = validate_df(df)
     df.loc[:,'user_id'] = user_id
     df = df.set_index('timestamp')
@@ -60,8 +62,11 @@ def write_with_reuse_client(user_id, df, folder):
         filesystem=gcs_filesystem_reused
     )
 
-storage_client_reused = storage.Client(project=os.environ['GCP_PROJECT_ID'])
+storage_client_reused = None
 def store_raw_with_reuse_client(data):
+    if storage_client_reused is None:
+        storage_client_reused = storage.Client(project=os.environ['GCP_PROJECT_ID'])
+
     bucket = storage_client_reused.get_bucket(os.environ['GCP_BUCKET_NAME'])
 
     fname = str(uuid.uuid4())

@@ -3,40 +3,6 @@ import pandas as pd
 import pyarrow.flight as flight
 
 
-
-
-def refresh_collections(beg_time):
-    """
-    Refreshes metadata for specified collections in a Dremio datalake using Apache Arrow Flight.
-
-    Ensures we get latest data.
-    """
-
-    collections = ['profiles', 'outputs', 'samples', 'parsed']
-    host = os.environ['DREMIO_HOST']
-    username = os.environ['DREMIO_USERNAME']
-    password = os.environ['DREMIO_PASSWORD']
-
-    try:
-        flight_client = flight.FlightClient(f'grpc+tcp://{host}:32010/grpc')
-        token = flight_client.authenticate_basic_token(username, password)
-        options = flight.FlightCallOptions(headers=[token])
-
-        for collection in collections:
-            query = f'''ALTER TABLE datalake.{collection} REFRESH METADATA;'''
-            print(f"Refreshing metadata for {collection}")
-            flight_info = flight_client.get_flight_info(flight.FlightDescriptor.for_command(query), options)
-            reader = flight_client.do_get(flight_info.endpoints[0].ticket, options)
-            # Process reader if needed here
-
-        print("Metadata refresh completed.")
-        return True
-
-    except Exception as e:
-        print(f"An error occurred refreshing metadata: {e}")
-        return False
-
-
 def read(user_id, beg_time, end_time, tags, collection, dedup=False):
     host = os.environ['DREMIO_HOST']
     username = os.environ['DREMIO_USERNAME']
@@ -47,11 +13,13 @@ def read(user_id, beg_time, end_time, tags, collection, dedup=False):
     token = client.authenticate_basic_token(username, password)
     options = flight.FlightCallOptions(headers=[token])
 
-    # Update metadata
-    query = f'''ALTER TABLE datalake.{collection} REFRESH METADATA;'''
-    flight_info = client.get_flight_info(flight.FlightDescriptor.for_command(query), options)
-    reader = client.do_get(flight_info.endpoints[0].ticket, options)
-    df = reader.read_pandas()
+    # Update metadata ...
+    # attempting to move this to after write instead, see write.refresh_collections.
+    # re coordinator: before updating waerlib version, need to add env vars to coordinator
+#     query = f'''ALTER TABLE datalake.{collection} REFRESH METADATA;'''
+#     flight_info = client.get_flight_info(flight.FlightDescriptor.for_command(query), options)
+#     reader = client.do_get(flight_info.endpoints[0].ticket, options)
+#     df = reader.read_pandas()
 
     # Query data
     if dedup==False:
@@ -65,7 +33,7 @@ def read(user_id, beg_time, end_time, tags, collection, dedup=False):
         AND "timestamp"<='{pd.to_datetime([end_time]).astype('datetime64[us]').astype(int)[0]}'
         '''
     else:
-        dedup_query = f'''
+        query = f'''
         SELECT * FROM (
         SELECT "dir0", "timestamp", "key", "val", 
         ROW_NUMBER() OVER (PARTITION BY "dir0", "timestamp", "key" ORDER BY "timestamp" DESC)

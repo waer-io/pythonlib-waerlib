@@ -6,6 +6,10 @@ import pyarrow as pa
 import pyarrow.fs as fs
 import pyarrow.parquet as pq
 from google.cloud import storage
+from datetime import datetime
+
+
+tag_write = "[WAERLIB: write]"
 
 def validate_df(df):
     assert 'timestamp' in df.columns, 'Column "timestamp" not in df'
@@ -33,6 +37,9 @@ def write(user_id, df, folder):
         partition_cols=['user_id', 'month'],
         filesystem=fs.GcsFileSystem()
     )
+
+    # in testing. for coordinator, is missing the env vars
+    refresh_collections(collections = [folder])
 
 def store_raw(data):
     storage_client = storage.Client(project=os.environ['GCP_PROJECT_ID'])
@@ -62,6 +69,9 @@ def write_with_reuse_client(user_id, df, folder):
         filesystem=gcs_filesystem_reused
     )
 
+    # in testing. for coordinator, is missing the env vars
+    refresh_collections(collections = [folder])
+
 storage_client_reused = None
 def store_raw_with_reuse_client(data):
     if storage_client_reused is None:
@@ -77,3 +87,44 @@ def store_raw_with_reuse_client(data):
     blob = bucket.blob(fname)
     with blob.open(mode='w') as f:
         f.write(json.dumps(data))
+
+
+
+
+def refresh_collections(collections = ['profiles', 'outputs', 'samples', 'parsed']):
+    """
+    Refreshes metadata for specified collections in a Dremio datalake using Apache Arrow Flight.
+
+    Ensures we get latest data.
+    """
+
+    print(f"[{datetime.now()}] {tag_write} Starting refresh collections...")
+
+    host = os.environ['DREMIO_HOST']
+    username = os.environ['DREMIO_USERNAME']
+    password = os.environ['DREMIO_PASSWORD']
+
+    try:
+        flight_client = flight.FlightClient(f'grpc+tcp://{host}:32010/grpc')
+
+        print(f"[{datetime.now()}] {tag_write} Authenticating token..")
+        token = flight_client.authenticate_basic_token(username, password)
+        print(f"[{datetime.now()}] {tag_write} Authenticated token")
+        options = flight.FlightCallOptions(headers=[token])
+
+        for collection in collections:
+            query = f'''ALTER TABLE datalake.{collection} REFRESH METADATA;'''
+            print(f"[{datetime.now()}] {tag_write} Refreshing metadata for {collection}")
+            flight_info = flight_client.get_flight_info(flight.FlightDescriptor.for_command(query), options)
+            print(f"[{datetime.now()}] {tag_write} Performing get for {collection}")
+            reader = flight_client.do_get(flight_info.endpoints[0].ticket, options)
+            # Process reader if needed here
+
+        print(f"[{datetime.now()}] {tag_write} Metadata refresh completed.")
+        return True
+
+    except Exception as e:
+        print(f"[{datetime.now()}] {tag_write} An error occurred refreshing metadata: {e}")
+        return False
+
+    print(f"[{datetime.now()}] {tag_write} Finished refresh collections")

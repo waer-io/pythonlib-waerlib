@@ -57,6 +57,7 @@ def store_raw(data):
 
 gcs_filesystem_reused = None
 def write_with_reuse_client(user_id, df, folder):
+    global gcs_filesystem_reused
     if gcs_filesystem_reused is None:
         gcs_filesystem_reused = fs.GcsFileSystem()
     df = validate_df(df)
@@ -74,6 +75,7 @@ def write_with_reuse_client(user_id, df, folder):
 
 storage_client_reused = None
 def store_raw_with_reuse_client(data):
+    global storage_client_reused
     if storage_client_reused is None:
         storage_client_reused = storage.Client(project=os.environ['GCP_PROJECT_ID'])
 

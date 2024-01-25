@@ -7,6 +7,7 @@ import pyarrow.fs as fs
 import pyarrow.parquet as pq
 from google.cloud import storage
 from datetime import datetime
+import pyarrow.flight as flight
 
 
 tag_write = "[WAERLIB: write]"

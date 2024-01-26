@@ -15,10 +15,12 @@ def read(user_id, beg_time, end_time, tags, collection, dedup=False):
 
     # Update metadata ...
     # attempting to move this to after write instead, see write.refresh_collections.
-    query = f'''ALTER TABLE datalake.{collection} REFRESH METADATA;'''
-    flight_info = client.get_flight_info(flight.FlightDescriptor.for_command(query), options)
-    reader = client.do_get(flight_info.endpoints[0].ticket, options)
-    df = reader.read_pandas()
+    # currently commented, as we're trying to remove this completely, it takes a loot of time for samples, parsed.
+    # as we'll set a limit of action_ts 2h and dremio already updates every 1h itself, it should not be needed, hopefully
+#     query = f'''ALTER TABLE datalake.{collection} REFRESH METADATA;'''
+#     flight_info = client.get_flight_info(flight.FlightDescriptor.for_command(query), options)
+#     reader = client.do_get(flight_info.endpoints[0].ticket, options)
+#     df = reader.read_pandas()
 
     # Query data
     if dedup==False:

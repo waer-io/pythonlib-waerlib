@@ -15,11 +15,10 @@ def read(user_id, beg_time, end_time, tags, collection, dedup=False):
 
     # Update metadata ...
     # attempting to move this to after write instead, see write.refresh_collections.
-    # re coordinator: before updating waerlib version, need to add env vars to coordinator
-#     query = f'''ALTER TABLE datalake.{collection} REFRESH METADATA;'''
-#     flight_info = client.get_flight_info(flight.FlightDescriptor.for_command(query), options)
-#     reader = client.do_get(flight_info.endpoints[0].ticket, options)
-#     df = reader.read_pandas()
+    query = f'''ALTER TABLE datalake.{collection} REFRESH METADATA;'''
+    flight_info = client.get_flight_info(flight.FlightDescriptor.for_command(query), options)
+    reader = client.do_get(flight_info.endpoints[0].ticket, options)
+    df = reader.read_pandas()
 
     # Query data
     if dedup==False:

@@ -39,8 +39,8 @@ def write(user_id, df, folder):
         filesystem=fs.GcsFileSystem()
     )
 
-    # in testing. for coordinator, is missing the env vars
-    refresh_collections(collections = [folder])
+    # in testing. unable to move it here from before read. doesn't complete as request timeouts i guess, at the authenticate token. maybe same ssl issue. it can take like 8 minutes for samples to be refreshed
+    # refresh_collections(collections = [folder])
 
 def store_raw(data):
     storage_client = storage.Client(project=os.environ['GCP_PROJECT_ID'])
@@ -71,8 +71,8 @@ def write_with_reuse_client(user_id, df, folder):
         filesystem=gcs_filesystem_reused
     )
 
-    # in testing. for coordinator, is missing the env vars
-    refresh_collections(collections = [folder])
+    # in testing. unable to move it here from before read. doesn't complete as request timeouts i guess, at the authenticate token. maybe same ssl issue. it can take like 8 minutes for samples to be refreshed
+    #refresh_collections(collections = [folder])
 
 storage_client_reused = None
 def store_raw_with_reuse_client(data):

@@ -41,7 +41,7 @@ class StructuredFormatter(logging.Formatter):
 
 
 def setup_logging(service="undefined-service"):
-    log_level = logging.TRACE
+    log_level = logging.DEBUG
     formatter = StructuredFormatter()
     handlers = [
         logging.StreamHandler(),

@@ -67,7 +67,7 @@ def setup_active_request(request, app):
 
     if request_id is None:
         request_id = str(uuid.uuid4())
-        app.logger.warning(f"Received endpoint {request.path} without a request id. Created one: {request_id}")
+        app.logger.debug(f"Received endpoint {request.path} without a request id. Created one: {request_id}")
 
     app.logger.debug(f"Request: {request.scheme} {request.method} {request.full_path} [{request_id}]")
 

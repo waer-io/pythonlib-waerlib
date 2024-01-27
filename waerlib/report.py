@@ -43,21 +43,21 @@ def get_data(user_id, start_date, end_date, tags, use_gcp = True):
 
 
 
-def get_latest_sleep_composite_value(user_id, start_date, end_date):
-    return get_latest_composite_value(user_id, start_date, end_date, 'sleep_composite')
+def get_latest_sleep_composite_value(existing_df):
+    return _get_latest_composite_value(existing_df[existing_df['key'] == 'sleep_composite'])
 
-def get_latest_activity_composite_value(user_id, start_date, end_date):
-    return get_latest_composite_value(user_id, start_date, end_date, 'activity_composite')
+def get_latest_activity_composite_value(existing_df):
+    return _get_latest_composite_value(existing_df[existing_df['key'] == 'activity_composite'])
 
-def get_latest_fitness_composite_value(user_id, start_date, end_date):
-    return get_latest_composite_value(user_id, start_date, end_date, 'fitness_composite')
+def get_latest_fitness_composite_value(existing_df):
+    return _get_latest_composite_value(existing_df[existing_df['key'] == 'fitness_composite'])
 
-def get_latest_composite_value(user_id, start_date, end_date, tag):
-    tags = [tag]
-    df = get_data(user_id, start_date, end_date, tags, use_gcp = True)
+
+def _get_latest_composite_value(existing_df):
+    df = existing_df
 
     if len(df) == 0:
-        print ('No data')
+        print('No data')
         return None
 
     df = df.sort_values(by = 'timestamp')
@@ -66,16 +66,17 @@ def get_latest_composite_value(user_id, start_date, end_date, tag):
     return round(latest_value, 1)
 
 
-def get_latest_waer_index_value(user_id, start_date, end_date):
-    tags = ['waer_index']
-    df = get_data(user_id, start_date, end_date, tags, use_gcp = True)
+def get_latest_waer_index_value(existing_df):
+    df = existing_df[existing_df['key'] == 'waer_index']
 
     if len(df) == 0:
-        print ('No data')
+        print('No data')
         return None
-    df = df.sort_values(by = 'timestamp')
 
-    return df.iloc[-1]['val']['waer_index_5']
+    df = df.sort_values(by = 'timestamp')
+    latest_value = df.iloc[-1]['val']['waer_index_5']
+
+    return round(latest_value, 1)
 
 
 def get_latest_waer_index_tuple(user_id, start_date, end_date):

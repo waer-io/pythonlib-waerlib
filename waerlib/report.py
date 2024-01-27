@@ -40,7 +40,45 @@ def get_data(user_id, start_date, end_date, tags, use_gcp = True):
         df = pd.DataFrame(data)
     return df
 
-def get_waer_index_tuple(user_id, start_date, end_date):
+
+
+
+def get_latest_sleep_composite_value(user_id, start_date, end_date):
+    return get_latest_composite_value(user_id, start_date, end_date, 'sleep_composite')
+
+def get_latest_activity_composite_value(user_id, start_date, end_date):
+    return get_latest_composite_value(user_id, start_date, end_date, 'activity_composite')
+
+def get_latest_fitness_composite_value(user_id, start_date, end_date):
+    return get_latest_composite_value(user_id, start_date, end_date, 'fitness_composite')
+
+def get_latest_composite_value(user_id, start_date, end_date, tag):
+    tags = [tag]
+    df = get_data(user_id, start_date, end_date, tags, use_gcp = True)
+
+    if len(df) == 0:
+        print ('No data')
+        return None
+
+    df = df.sort_values(by = 'timestamp')
+    latest_value = df.iloc[-1]['val'].apply(lambda x: x['scaled_outputs']['scaled_estimate']['mu'])
+
+    return round(latest_value, 1)
+
+
+def get_latest_waer_index_value(user_id, start_date, end_date):
+    tags = ['waer_index']
+    df = get_data(user_id, start_date, end_date, tags, use_gcp = True)
+
+    if len(df) == 0:
+        print ('No data')
+        return None
+    df = df.sort_values(by = 'timestamp')
+
+    return df.iloc[-1]['val']['waer_index_5']
+
+
+def get_latest_waer_index_tuple(user_id, start_date, end_date):
     tags = ['waer_index']
     df = get_data(user_id, start_date, end_date, tags, use_gcp = True)
 
@@ -57,6 +95,7 @@ def get_waer_index_tuple(user_id, start_date, end_date):
 
     return waer_index_5, waer_index_5_prev
 
+
 def get_composites_and_filled_data(user_id, start_date, end_date):
     tags = ['sleep_composite','activity_composite','fitness_composite',
            'asleep_minutes_filled','moderate_minutes_filled','resting_heartrate_bpm_filled']
@@ -65,7 +104,8 @@ def get_composites_and_filled_data(user_id, start_date, end_date):
 
     return data
 
-def get_composites_data(user_id, start_date, end_date)
+
+def get_composites_data(user_id, start_date, end_date):
     tags = ['sleep_composite','activity_composite','fitness_composite']
     df = get_data(user_id, start_date, end_date, tags, use_gcp = True)
     data = df.to_dict(orient = 'records')

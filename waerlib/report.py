@@ -61,9 +61,13 @@ def _get_latest_composite_value(existing_df):
         return None
 
     df = df.sort_values(by = 'timestamp')
-    latest_value = df.iloc[-1]['val'].apply(lambda x: x['scaled_outputs']['scaled_estimate']['mu'])
-
-    return round(latest_value, 1)
+    latest_val = df.iloc[-1]['val']
+    if 'scaled_outputs' in latest_val and 'scaled_estimate' in latest_val['scaled_outputs'] and 'mu' in latest_val['scaled_outputs']['scaled_estimate']:
+        latest_value = latest_val['scaled_outputs']['scaled_estimate']['mu']
+        return round(latest_value, 1)
+    else:
+        print('Required data not found')
+        return None
 
 
 def get_latest_waer_index_value(existing_df):

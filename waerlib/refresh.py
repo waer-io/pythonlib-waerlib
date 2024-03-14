@@ -1,6 +1,6 @@
 
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
 import pyarrow.flight as flight
 
 tag_refresh = "[WAERLIB: refresh]"
@@ -28,7 +28,7 @@ def refresh_collections(collections = ['profiles', 'outputs', 'samples', 'parsed
             print(f"[{datetime.now()}] {tag_refresh} Authenticating token..", flush=True)
             token = flight_client.authenticate_basic_token(username, password)
             print(f"[{datetime.now()}] {tag_refresh} Authenticated token", flush=True)
-            options = flight.FlightCallOptions(headers=[token], timeout=timedelta(seconds=60 * 15)) # 15min
+            options = flight.FlightCallOptions(headers=[token], timeout=60 * 15) # 15min
             # /
 
             query = f'''ALTER TABLE datalake.{collection} REFRESH METADATA;'''

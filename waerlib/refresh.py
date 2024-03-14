@@ -22,12 +22,15 @@ def refresh_collections(collections = ['profiles', 'outputs', 'samples', 'parsed
     try:
         flight_client = flight.FlightClient(f'grpc+tcp://{host}:32010/grpc')
 
-        print(f"[{datetime.now()}] {tag_refresh} Authenticating token..")
-        token = flight_client.authenticate_basic_token(username, password)
-        print(f"[{datetime.now()}] {tag_refresh} Authenticated token")
-        options = flight.FlightCallOptions(headers=[token])
-
         for collection in collections:
+
+            # try auth each time, so as to not expire token
+            print(f"[{datetime.now()}] {tag_refresh} Authenticating token..")
+            token = flight_client.authenticate_basic_token(username, password)
+            print(f"[{datetime.now()}] {tag_refresh} Authenticated token")
+            options = flight.FlightCallOptions(headers=[token])
+            # /
+
             query = f'''ALTER TABLE datalake.{collection} REFRESH METADATA;'''
             print(f"[{datetime.now()}] {tag_refresh} Refreshing metadata for {collection}")
             flight_info = flight_client.get_flight_info(flight.FlightDescriptor.for_command(query), options)

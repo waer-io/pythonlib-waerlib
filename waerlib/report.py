@@ -30,7 +30,7 @@ def get_data(user_id, start_date, end_date, tags, use_gcp = True):
 
 
     """
-    print("Getting data for {user_id}, {start_date}..{end_date}, {use_gcp}, {tags}", flush=True)
+    print(f"Getting data for {user_id}, {start_date}..{end_date}, {use_gcp}, {tags}", flush=True)
 
     if use_gcp:
         df = read(user_id, start_date, end_date, tags, 'outputs')

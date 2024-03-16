@@ -30,6 +30,8 @@ def get_data(user_id, start_date, end_date, tags, use_gcp = True):
 
 
     """
+    print("Getting data for {user_id}, {start_date}..{end_date}, {use_gcp}, {tags}", flush=True)
+
     if use_gcp:
         df = read(user_id, start_date, end_date, tags, 'outputs')
         df['timestamp'] = df['timestamp'].astype(str)
@@ -57,7 +59,7 @@ def _get_latest_composite_value(existing_df):
     df = existing_df
 
     if len(df) == 0:
-        print('No data')
+        print('_get_latest_composite_value - No data')
         return None
 
     df = df.sort_values(by = 'timestamp')
@@ -74,7 +76,7 @@ def get_latest_waer_index_value(existing_df):
     df = existing_df[existing_df['key'] == 'waer_index']
 
     if len(df) == 0:
-        print('No data')
+        print('get_latest_waer_index_value - No data')
         return None
 
     df = df.sort_values(by = 'timestamp')
@@ -88,7 +90,7 @@ def get_latest_waer_index_tuple(user_id, start_date, end_date):
     df = get_data(user_id, start_date, end_date, tags, use_gcp = True)
 
     if len(df) == 0:
-        print ('No data')
+        print ('get_latest_waer_index_tuple - No data')
         return None
     df = df.sort_values(by = 'timestamp')
 

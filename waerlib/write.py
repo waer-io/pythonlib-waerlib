@@ -75,7 +75,7 @@ def write_with_reuse_client(user_id, df, folder):
     #refresh_collections(collections = [folder])
 
 storage_client_reused = None
-def store_raw_with_reuse_client(data):
+def store_raw_with_reuse_client(data, user_id, msg_type = ""):
     global storage_client_reused
     if storage_client_reused is None:
         storage_client_reused = storage.Client(project=os.environ['GCP_PROJECT_ID'])
@@ -83,8 +83,8 @@ def store_raw_with_reuse_client(data):
     bucket = storage_client_reused.get_bucket(os.environ['GCP_BUCKET_NAME'])
 
     fname = str(uuid.uuid4())
-    if data.get('user') and data['user'].get('user_id'):
-        fname = 'terraUID-' + data['user']['user_id'] + '~' + fname
+    if user_id:
+        fname = 'terraUID-' + user_id + "-"+ msg_type + '~' + fname
     fname = 'raw/' + fname
 
     blob = bucket.blob(fname)

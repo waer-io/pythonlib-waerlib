@@ -32,3 +32,8 @@ python ./example/store_raw.py
 python ./example/write.py
 python ./example/logging_config.py
 ```
+
+
+# Other
+
+* use `pip install --upgrade -e . ` when locally updating this and need it included in a local service.

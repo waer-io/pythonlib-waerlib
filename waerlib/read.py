@@ -59,7 +59,7 @@ def read(user_id, beg_time, end_time, tags, collection, dedup=False):
 # start_time_nanos and end_time_nanos   - we'll aim to just work with nanos for now. way too much time is spent on debugging time issues.
 # start_year_month and end_year_month   - the folder date, the 'month=YYYY-MM' folder (aka dir1)
 # dedup                                 - was always false, so just removed it.
-def read_nanos(user_id, start_time_nanos, end_time_nanos, start_year_month, end_year_month, tags, collection, dedup=False):
+def read_v2(user_id, start_time_nanos, end_time_nanos, start_year_month, end_year_month, tags, collection, dedup=False):
     host = os.environ['DREMIO_HOST']
     username = os.environ['DREMIO_USERNAME']
     password = os.environ['DREMIO_PASSWORD']

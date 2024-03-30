@@ -18,7 +18,7 @@ Base = declarative_base()
 
     model - writes to. insertBatched.
     model - reads from. getAll.
-    coordinator - ?? for report ??
+    coordinator - for reports. The query is made right in this lib in `report.py` in function `get_data`.
 
 """
 

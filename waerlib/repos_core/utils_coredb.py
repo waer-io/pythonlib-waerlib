@@ -13,11 +13,14 @@ import coredb_profiles as profiles_repo
 import coredb_samples as samples_repo
 
 
+
 class waer_coredb_util:
     """
         postgres core db utilities.
 
         also includes the user id wrappers. these also used in model. maybe not necessary, if wrapping handled here. need to test.
+
+        remove the _postgres maybe from the function calls.
     """
 
     # makes it easy to get out a specific test run results, even for same user, when testing locally

@@ -3,7 +3,7 @@ import pandas as pd
 import pyarrow.flight as flight
 
 
-# don't use this. use the read_nanos below. We need to get rid of extra work here and
+# don't use this. use the read_v2 below. We need to get rid of extra work here and
 # later handle any time and user_id parsing elsewhere.
 def read(user_id, beg_time, end_time, tags, collection, dedup=False):
     host = os.environ['DREMIO_HOST']

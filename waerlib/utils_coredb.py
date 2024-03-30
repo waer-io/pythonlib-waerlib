@@ -1,16 +1,12 @@
 import json
 from datetime import datetime, timedelta, date
 import pandas as pd
-import numpy as np
-import os
-import waer_sqlite
-import waerlib
-import waer_time_util
+import .waer_time_util
 
-import coredb_outputs as outputs_repo
-import coredb_parsed as parsed_repo
-import coredb_profiles as profiles_repo
-import coredb_samples as samples_repo
+import .repos_core.coredb_outputs as outputs_repo
+import .repos_core.coredb_parsed as parsed_repo
+import .repos_core.coredb_profiles as profiles_repo
+import .repos_core.coredb_samples as samples_repo
 
 
 

@@ -1,12 +1,12 @@
 import json
 from datetime import datetime, timedelta, date
 import pandas as pd
-import .waer_time_util
+from .waer_time_util import waer_time_util
 
-import .repos_core.coredb_outputs as outputs_repo
-import .repos_core.coredb_parsed as parsed_repo
-import .repos_core.coredb_profiles as profiles_repo
-import .repos_core.coredb_samples as samples_repo
+from .repos_core import coredb_outputs as outputs_repo
+from .repos_core import coredb_parsed as parsed_repo
+from .repos_core import coredb_profiles as profiles_repo
+from .repos_core import coredb_samples as samples_repo
 
 
 

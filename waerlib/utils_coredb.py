@@ -73,9 +73,7 @@ class waer_coredb_util:
     # from outputs - seems we use lists everywhere internally.
     def write_outputs_postgres(outputs):
         print(f"------------------ write_outputs_postgres - writing outputs ------------------ ")
-        df = outputs
-        if not isinstance(outputs, pd.DataFrame):
-            df = pd.DataFrame(outputs)
+        df = waer_coredb_util._ensure_dataframe(outputs)
 
         print("... write_outputs_postgres. columns")
         print(df.columns)
@@ -128,9 +126,7 @@ class waer_coredb_util:
         # THIS IS NEVER USED IN MODEL!
         # this is used in ingest
         print(f"------------------ write_parsed_postgres - writing parsed ------------------ ")
-        df = parsed
-        if not isinstance(parsed, pd.DataFrame):
-            df = pd.DataFrame(parsed)
+        df = waer_coredb_util._ensure_dataframe(parsed)
 
         print("... write_parsed_postgres. columns")
         print(df.columns)
@@ -179,9 +175,8 @@ class waer_coredb_util:
         # THIS IS NEVER USED IN MODEL!
         # this is used in ingest
         print(f"------------------ write_samples_postgres - writing samples ------------------ ")
-        df = samples
-        if not isinstance(samples, pd.DataFrame):
-            df = pd.DataFrame(samples)
+        df = waer_coredb_util._ensure_dataframe(samples)
+
 
         print("... write_samples_postgres. columns")
         print(df.columns)
@@ -230,9 +225,7 @@ class waer_coredb_util:
         # THIS IS NEVER USED IN MODEL!
         # this is used in ingest
         print(f"------------------ write_profiles_postgres - writing profiles ------------------ ")
-        df = profiles
-        if not isinstance(profiles, pd.DataFrame):
-            df = pd.DataFrame(profiles)
+        df = waer_coredb_util._ensure_dataframe(profiles)
 
         print("... write_profiles_postgres. columns")
         print(df.columns)
@@ -288,3 +281,13 @@ class waer_coredb_util:
             return user_id
         else:
             return "user_id=" + user_id
+
+
+    def _ensure_dataframe(input_collection):
+        if isinstance(input_collection, pd.DataFrame):
+            return input_collection
+        elif isinstance(input_collection, list):
+            return pd.DataFrame(input_collection)
+        else:
+            print(f"----------- UNEXPECTED ---------- {type(input_collection)} is not a list or a df. Trying to wrap in df anyway.")
+            return pd.DataFrame(input_collection)

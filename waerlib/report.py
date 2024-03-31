@@ -31,16 +31,15 @@ def get_data(user_id, start_ts, end_ts, tags, use_gcp = True):
 
 
     """
-    print(f"Getting data for {user_id}, {start_date}..{end_date}, {use_gcp}, {tags}", flush=True)
+    print(f"Getting data for {user_id}, {start_ts}..{end_ts}, {use_gcp}, {tags}", flush=True)
 
     if use_gcp:
-        # df = read(user_id, start_ts, end_date, tags, 'outputs') # deprecated
         df = outputs_repo.getAll(user_id, tags, start_ts, end_ts)
         df['timestamp'] = df['timestamp'].astype(str)
         df['val'] = df['val'].apply(lambda x: json.loads(x))
     else:
         path_to_data = './outputs/test_data.json'
-        data = query_data_json(user_id, tags, start_date, end_date, path_to_data)
+        data = query_data_json(user_id, tags, start_ts, end_ts, path_to_data)
         df = pd.DataFrame(data)
     return df
 

@@ -76,17 +76,23 @@ class waer_time_util:
         datelist = waer_time_util.get_date_list(start_date, end_date)
         return [datetime.strftime(date, date_format) for date in datelist]
 
-    def get_date_list(start_date, end_date):
+    def get_date_list(start_date, end_date, local=False):
         """
         start_date and end_date are date strings with format "%Y-%m-%d"
         returns a list of dates
 
         """
 
-        # added day because the list will otherwise start one day too late and end one day too early.
-        # assuming we have inclusive ending date. remove that part if not.
-        start_dt = pd.to_datetime(start_date) + pd.Timedelta(days=1)
-        end_dt = pd.to_datetime(end_date) + pd.Timedelta(days=1)
+        start_dt = pd.to_datetime(start_date)
+        end_dt = pd.to_datetime(end_date)
+
+        if local:
+            # added day because the list will otherwise start one day too late and end one day too early.
+            # assuming we have inclusive ending date. remove that part if not.
+            start_dt = start_dt + pd.Timedelta(days=1)
+            end_dt = end_dt + pd.Timedelta(days=1)
+
+
 
         L = pd.date_range(start_dt, end_dt, freq='d')
         date_list = [dt.date() for dt in L]

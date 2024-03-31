@@ -1,6 +1,10 @@
 import os
 
-def get_sql_url():
+def get_sql_url(local=False):
+
+    if local:
+        return get_local_sql_url()
+
     sql_url = 'postgresql://{username}:{password}@{hostname}/{database}'.format(
         hostname=os.environ['CORE_POSTGRES_HOSTNAME'],
         database=os.environ['CORE_POSTGRES_DATABASE'],

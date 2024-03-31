@@ -81,6 +81,7 @@ class waer_coredb_util:
             return []
         print(df.head())
 
+        df['val'] = df['val'].apply(json.loads)
         df['timestamp'] = waer_coredb_util._ensure_nanos_ts(df)
 
         df['timestamp'].apply(waer_time_util.enforce_nanos) # one more sanity check that we really are storing-querying nanos before providing it through this layer
@@ -131,6 +132,7 @@ class waer_coredb_util:
             return []
         print(df.head())
 
+        df['val'] = df['val'].apply(json.loads)
         df['timestamp'] = waer_coredb_util._ensure_nanos_ts(df)
 
         df['timestamp'].apply(waer_time_util.enforce_nanos) # one more sanity check that we really are storing-querying nanos before providing it through this layer
@@ -181,6 +183,7 @@ class waer_coredb_util:
             return []
         print(df.head())
 
+        df['val'] = df['val'].apply(json.loads)
         df['timestamp'] = waer_coredb_util._ensure_nanos_ts(df)
 
         df['timestamp'].apply(waer_time_util.enforce_nanos) # one more sanity check that we really are storing-querying nanos before providing it through this layer
@@ -231,6 +234,7 @@ class waer_coredb_util:
             return []
         print(df.head())
 
+        df['val'] = df['val'].apply(json.loads)
         df['timestamp'] = waer_coredb_util._ensure_nanos_ts(df)
 
         df['timestamp'].apply(waer_time_util.enforce_nanos) # one more sanity check that we really are storing-querying nanos before providing it through this layer

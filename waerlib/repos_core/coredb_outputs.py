@@ -1,14 +1,12 @@
 import datetime
 import pandas as pd
-
 import sqlalchemy as sa
-from sqlalchemy.sql import func
-from sqlalchemy.orm import declarative_base
-import json
+from sqlalchemy.orm import declarative_base, sessionmaker
+
 from .sql_props import get_sql_url
 
 engine = sa.create_engine(get_sql_url())
-
+Session = sessionmaker(bind=engine)
 Base = declarative_base()
 
 """
@@ -32,16 +30,17 @@ class Outputs(Base):
 
 
 def insertBatched(df):
-    df.to_sql(Outputs.__tablename__, con=engine, if_exists='append', index=False, chunksize=1000)
+    with Session() as session:
+        with session.begin():
+            df.to_sql(Outputs.__tablename__, con=session.bind, if_exists='append', index=False, chunksize=1000)
 
 # todo. might want an index on those for all tables?
 def getAll(user_id, keys, start_timestamp, end_timestamp):
-    with sa.orm.Session(engine) as session:
+    with Session() as session:
         query = session.query(Outputs).filter(
             Outputs.user_id == user_id,
             Outputs.key.in_(keys),
             Outputs.timestamp >= start_timestamp,
             Outputs.timestamp <= end_timestamp,
         )
-
         return pd.read_sql(query.statement, session.bind)

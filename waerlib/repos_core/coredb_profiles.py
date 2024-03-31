@@ -5,7 +5,6 @@ import sqlalchemy as sa
 from sqlalchemy.sql import func
 from sqlalchemy.orm import declarative_base
 import json
-from sqlalchemy.dialects.postgresql import JSONB
 from .sql_props import get_sql_url
 
 engine = sa.create_engine(get_sql_url())
@@ -27,7 +26,7 @@ class Profiles(Base):
     id = sa.Column('id', sa.BigInteger, primary_key=True)
     timestamp = sa.Column('timestamp', sa.BigInteger, nullable=False)
     key = sa.Column('key', sa.String(255), nullable=False)
-    val = sa.Column('val', JSONB, nullable=False)
+    val = sa.Column('val', sa.Text, nullable=False) # might want it as bytea in the future.
     version = sa.Column('version', sa.String(255), nullable=False)
     user_id = sa.Column('user_id', sa.String(255), nullable=False)
 

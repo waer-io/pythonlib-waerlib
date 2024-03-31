@@ -36,6 +36,13 @@ class waer_coredb_util:
     def _ensure_nanos_ts(df):
         return df['timestamp'].apply(waer_time_util.make_nanos) # for some reason, some seem nanos, others micros and that causes instability in getting the data. too lazy to investigate one by one.
 
+    def _convert_to_json(record_jsonable):
+        # convert python object to json string
+        return json.dumps(record_jsonable)
+
+    def _convert_from_json(record_jsoned):
+        # convert json string to python object
+        return json.loads(record_jsoned)
 
     # from outputs - seems we use lists everywhere internally.
     def write_outputs_postgres(outputs):
@@ -50,7 +57,7 @@ class waer_coredb_util:
         print(df['key'].unique())
 
         df['timestamp'] = waer_coredb_util._ensure_nanos_ts(df)
-        df['val'] = df['val'].apply(json.dumps)
+        df['val'] = df['val'].apply(waer_coredb_util._convert_to_json)
         df['version'] = df['version'].apply(waer_coredb_util._make_unique_version)
         df['user_id'] = df['user_id'].apply(waer_coredb_util.wrap_user_id_prefix_if_not)
 
@@ -81,7 +88,7 @@ class waer_coredb_util:
             return []
         print(df.head())
 
-        df['val'] = df['val'].apply(json.loads) # outputs val col is json only
+        df['val'] = df['val'].apply(waer_coredb_util._convert_from_json)
         df['timestamp'] = waer_coredb_util._ensure_nanos_ts(df)
 
         df['timestamp'].apply(waer_time_util.enforce_nanos) # one more sanity check that we really are storing-querying nanos before providing it through this layer
@@ -103,7 +110,7 @@ class waer_coredb_util:
         print(df['key'].unique())
 
         df['timestamp'] = waer_coredb_util._ensure_nanos_ts(df)
-        df['val'] = df['val'].apply(json.dumps)
+        df['val'] = df['val'].apply(waer_coredb_util._convert_to_json)
         df['version'] = df['version'].apply(waer_coredb_util._make_unique_version)
         df['user_id'] = df['user_id'].apply(waer_coredb_util.wrap_user_id_prefix_if_not)
 
@@ -132,7 +139,7 @@ class waer_coredb_util:
             return []
         print(df.head())
 
-        df['val'] = df['val'].apply(json.loads) # parsed val col is json only
+        df['val'] = df['val'].apply(waer_coredb_util._convert_from_json)
         df['timestamp'] = waer_coredb_util._ensure_nanos_ts(df)
 
         df['timestamp'].apply(waer_time_util.enforce_nanos) # one more sanity check that we really are storing-querying nanos before providing it through this layer
@@ -154,7 +161,7 @@ class waer_coredb_util:
         print(df['key'].unique())
 
         df['timestamp'] = waer_coredb_util._ensure_nanos_ts(df)
-        df['val'] = df['val'].apply(json.dumps)
+        df['val'] = df['val'].apply(waer_coredb_util._convert_to_json)
         df['version'] = df['version'].apply(waer_coredb_util._make_unique_version)
         df['user_id'] = df['user_id'].apply(waer_coredb_util.wrap_user_id_prefix_if_not)
 
@@ -183,7 +190,7 @@ class waer_coredb_util:
             return []
         print(df.head())
 
-        df['val'] = df['val'].apply(json.loads) # samples val col is json only
+        df['val'] = df['val'].apply(waer_coredb_util._convert_from_json)
         df['timestamp'] = waer_coredb_util._ensure_nanos_ts(df)
 
         df['timestamp'].apply(waer_time_util.enforce_nanos) # one more sanity check that we really are storing-querying nanos before providing it through this layer
@@ -205,7 +212,7 @@ class waer_coredb_util:
         print(df['key'].unique())
 
         df['timestamp'] = waer_coredb_util._ensure_nanos_ts(df)
-        df['val'] = df['val'].apply(json.dumps)
+        df['val'] = df['val'].apply(waer_coredb_util._convert_to_json)
         df['version'] = df['version'].apply(waer_coredb_util._make_unique_version)
         df['user_id'] = df['user_id'].apply(waer_coredb_util.wrap_user_id_prefix_if_not)
 
@@ -234,7 +241,7 @@ class waer_coredb_util:
             return []
         print(df.head())
 
-        # df['val'] = df['val'].apply(json.loads) # PS! profile val col isnt jsons.
+        df['val'] = df['val'].apply(waer_coredb_util._convert_from_json)
         df['timestamp'] = waer_coredb_util._ensure_nanos_ts(df)
 
         df['timestamp'].apply(waer_time_util.enforce_nanos) # one more sanity check that we really are storing-querying nanos before providing it through this layer

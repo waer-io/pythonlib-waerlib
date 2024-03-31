@@ -38,8 +38,7 @@ class waer_coredb_util:
 
 
     # from outputs - seems we use lists everywhere internally.
-    # path_to_data - irrelevant, but here to follow the same signature as _sqlite, _json, _waerlib
-    def write_outputs_postgres(outputs, path_to_data):
+    def write_outputs_postgres(outputs):
         print(f"------------------ write_outputs_postgres - writing outputs ------------------ ")
         df = outputs
         if not isinstance(outputs, pd.DataFrame):
@@ -64,8 +63,7 @@ class waer_coredb_util:
 
 
     # to outputs - seems we use lists everywhere internally.
-    # path_to_data - irrelevant, but here to follow the same signature as _sqlite, _json, _waerlib
-    def query_outputs_postgres(user_id, key_or_keys, start_datetime, end_datetime, path_to_data):
+    def query_outputs_postgres(user_id, key_or_keys, start_datetime, end_datetime):
         start_timestamp = waer_utility.make_nanos(start_datetime)
         end_timestamp = waer_utility.make_nanos(end_datetime)
         keys = waer_utility._to_coll_if_not(key_or_keys)
@@ -87,8 +85,7 @@ class waer_coredb_util:
 
 
 
-    # path_to_data - irrelevant, but here to follow the same signature as _sqlite, _json, _waerlib
-    def write_parsed_postgres(parsed, path_to_data):
+    def write_parsed_postgres(parsed):
         # THIS IS NEVER USED IN MODEL!
         # this is used in ingest
         print(f"------------------ write_parsed_postgres - writing parsed ------------------ ")
@@ -113,8 +110,7 @@ class waer_coredb_util:
 
 
 
-    # path_to_data - irrelevant, but here to follow the same signature as _sqlite, _json, _waerlib
-    def query_parsed_postgres(user_id, key_or_keys, start_datetime, end_datetime, path_to_data):
+    def query_parsed_postgres(user_id, key_or_keys, start_datetime, end_datetime):
         start_timestamp = waer_utility.make_nanos(start_datetime)
         end_timestamp = waer_utility.make_nanos(end_datetime)
         keys = waer_utility._to_coll_if_not(key_or_keys)
@@ -136,8 +132,7 @@ class waer_coredb_util:
 
 
 
-    # path_to_data - irrelevant, but here to follow the same signature as _sqlite, _json, _waerlib
-    def write_samples_postgres(samples, path_to_data):
+    def write_samples_postgres(samples):
         # THIS IS NEVER USED IN MODEL!
         # this is used in ingest
         print(f"------------------ write_samples_postgres - writing samples ------------------ ")
@@ -162,8 +157,7 @@ class waer_coredb_util:
 
 
 
-    # path_to_data - irrelevant, but here to follow the same signature as _sqlite, _json, _waerlib
-    def query_samples_postgres(user_id, key_or_keys, start_datetime, end_datetime, path_to_data):
+    def query_samples_postgres(user_id, key_or_keys, start_datetime, end_datetime):
         start_timestamp = waer_utility.make_nanos(start_datetime)
         end_timestamp = waer_utility.make_nanos(end_datetime)
         keys = waer_utility._to_coll_if_not(key_or_keys)
@@ -185,9 +179,7 @@ class waer_coredb_util:
 
 
 
-
-    # path_to_data - irrelevant, but here to follow the same signature as _sqlite, _json, _waerlib
-    def write_profiles_postgres(profiles, path_to_data):
+    def write_profiles_postgres(profiles):
         # THIS IS NEVER USED IN MODEL!
         # this is used in ingest
         print(f"------------------ write_profiles_postgres - writing profiles ------------------ ")
@@ -210,8 +202,9 @@ class waer_coredb_util:
         df['timestamp'].apply(waer_time_util.enforce_nanos) # one more sanity check that we really are storing-querying nanos before providing it through this layer
         profiles_repo.insertBatched(df)
 
-    # path_to_data - irrelevant, but here to follow the same signature as _sqlite, _json, _waerlib
-    def query_profiles_postgres(user_id, key_or_keys, start_datetime, end_datetime, path_to_data):
+
+
+    def query_profiles_postgres(user_id, key_or_keys, start_datetime, end_datetime):
         start_timestamp = waer_utility.make_nanos(start_datetime)
         end_timestamp = waer_utility.make_nanos(end_datetime)
         keys = waer_utility._to_coll_if_not(key_or_keys)

@@ -2,6 +2,7 @@ import pandas as pd
 import json
 from .read import read
 from .repos_core import coredb_outputs as outputs_repo
+from .waer_time_util import waer_time_util
 
 def query_data_json(user_id, key, start_datetime, end_datetime, path_to_data):
     """
@@ -23,7 +24,7 @@ def query_data_json(user_id, key, start_datetime, end_datetime, path_to_data):
 
     return selection
 
-def get_data(user_id, start_ts, end_ts, tags, use_gcp = True):
+def get_data(user_id, start_date, end_date, tags, use_gcp = True):
     """
     generalised function to get data for the display
     allows option of using GCP storage (use_gcp = True) or reading from json
@@ -31,6 +32,10 @@ def get_data(user_id, start_ts, end_ts, tags, use_gcp = True):
 
 
     """
+
+    start_ts = waer_time_util.make_nanos(start_date)
+    end_ts = waer_time_util.make_nanos(end_date)
+
     print(f"Getting data for {user_id}, {start_ts}..{end_ts}, {use_gcp}, {tags}", flush=True)
 
     if use_gcp:

@@ -55,6 +55,9 @@ class waer_coredb_util:
         df['user_id'] = df['user_id'].apply(waer_coredb_util.wrap_user_id_prefix_if_not)
 
 
+        if 'id' in df.columns:
+            df = df.drop('id', axis=1)
+
         print(df.head())
 
         df['timestamp'].apply(waer_time_util.enforce_nanos) # one more sanity check that we really are storing-querying nanos before providing it through this layer
@@ -103,6 +106,9 @@ class waer_coredb_util:
         df['version'] = df['version'].apply(waer_coredb_util._make_unique_version)
         df['user_id'] = df['user_id'].apply(waer_coredb_util.wrap_user_id_prefix_if_not)
 
+        if 'id' in df.columns:
+            df = df.drop('id', axis=1)
+
         print(df.head())
 
         df['timestamp'].apply(waer_time_util.enforce_nanos) # one more sanity check that we really are storing-querying nanos before providing it through this layer
@@ -150,6 +156,9 @@ class waer_coredb_util:
         df['version'] = df['version'].apply(waer_coredb_util._make_unique_version)
         df['user_id'] = df['user_id'].apply(waer_coredb_util.wrap_user_id_prefix_if_not)
 
+        if 'id' in df.columns:
+            df = df.drop('id', axis=1)
+
         print(df.head())
 
         df['timestamp'].apply(waer_time_util.enforce_nanos) # one more sanity check that we really are storing-querying nanos before providing it through this layer
@@ -196,6 +205,9 @@ class waer_coredb_util:
         df['val'] = df['val'].apply(json.dumps)
         df['version'] = df['version'].apply(waer_coredb_util._make_unique_version)
         df['user_id'] = df['user_id'].apply(waer_coredb_util.wrap_user_id_prefix_if_not)
+
+        if 'id' in df.columns:
+            df = df.drop('id', axis=1)
 
         print(df.head())
 

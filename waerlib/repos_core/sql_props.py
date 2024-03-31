@@ -34,3 +34,22 @@ def get_local_sql_url():
                    port=1234, # some port as set with cloud sql proxy, don't set 5432, likely already in use if running postgres locally
                    password=os.environ['CORE_POSTGRES_PASSWORD'],
                )
+
+
+def get_pool_settings():
+    """
+        * pool_size: This is the number of connections to keep in the pool. The default is usually 5. Increasing the pool size can improve performance under high load by reducing the number of times new connections need to be created.
+        * max_overflow: This specifies the number of connections that can be created above pool_size if the pool is exhausted. By default, it’s often set to 10. This allows the pool to exceed its size temporarily under heavy load, at the cost of additional resources.
+        * pool_timeout: The number of seconds to wait before giving up on returning a connection from the pool. If set to None, it will wait indefinitely. This can be adjusted to ensure that your application behaves correctly under high load, either by waiting longer for a connection or failing quickly to try alternative logic.
+        * pool_recycle: This is the maximum number of seconds a connection can persist in the pool. After this time, the connection is automatically replaced with a new one. This is useful to avoid database server timeouts or to deal with database server settings that close idle connections.
+        * echo_pool: Setting this to True enables logging for pool checkouts and check-ins, which can be useful for debugging and performance tuning.
+        * pool_pre_ping: If set to True, SQLAlchemy will test each connection for liveness before using it, automatically discarding and replacing stale or broken connections. This can prevent errors in applications that experience infrequent use of database connections or operate in environments where network issues are common.
+    """
+    return {
+               'pool_size': 10,
+               'max_overflow': 15,
+               'pool_timeout': 30,
+               'pool_recycle': 3600,
+               'echo_pool': True,
+               'pool_pre_ping': True
+           }

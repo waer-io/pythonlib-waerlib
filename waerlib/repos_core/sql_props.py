@@ -45,11 +45,12 @@ def get_pool_settings():
         * echo_pool: Setting this to True enables logging for pool checkouts and check-ins, which can be useful for debugging and performance tuning.
         * pool_pre_ping: If set to True, SQLAlchemy will test each connection for liveness before using it, automatically discarding and replacing stale or broken connections. This can prevent errors in applications that experience infrequent use of database connections or operate in environments where network issues are common.
     """
+    ten_minutes_in_seconds = 10*60
     return {
                'pool_size': 10,
-               'max_overflow': 15,
+               'max_overflow': 20,
                'pool_timeout': 30,
-               'pool_recycle': 3600,
+               'pool_recycle': ten_minutes_in_seconds,
                'echo_pool': True,
                'pool_pre_ping': True
            }

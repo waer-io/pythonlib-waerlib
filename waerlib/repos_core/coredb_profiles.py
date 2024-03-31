@@ -5,7 +5,7 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 
 from .sql_props import get_sql_url, get_pool_settings
 
-engine = sa.create_engine(get_sql_url(), **get_pool_settings)
+engine = sa.create_engine(get_sql_url(), **get_pool_settings())
 Session = sessionmaker(bind=engine)
 Base = declarative_base()
 

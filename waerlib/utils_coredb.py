@@ -52,7 +52,7 @@ class waer_coredb_util:
         df['timestamp'] = waer_coredb_util._ensure_nanos_ts(df)
         df['val'] = df['val'].apply(json.dumps)
         df['version'] = df['version'].apply(waer_coredb_util._make_unique_version)
-        df['user_id'] = df['user_id'].apply(waer_time_util.wrap_user_id_prefix_if_not)
+        df['user_id'] = df['user_id'].apply(waer_coredb_util.wrap_user_id_prefix_if_not)
 
 
         print(df.head())
@@ -67,7 +67,7 @@ class waer_coredb_util:
         start_timestamp = waer_time_util.make_nanos(start_datetime)
         end_timestamp = waer_time_util.make_nanos(end_datetime)
         keys = waer_coredb_util._to_coll_if_not(key_or_keys)
-        user_id_wrapped = waer_time_util.wrap_user_id_prefix_if_not(user_id)
+        user_id_wrapped = waer_coredb_util.wrap_user_id_prefix_if_not(user_id)
 
         print(f"query_outputs_postgres - {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})")
 

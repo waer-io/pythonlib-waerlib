@@ -36,7 +36,9 @@ def get_outputs_data(user_id, start_date, end_date, tags, use_gcp = True):
     print(f"Getting outputs data for {user_id}, {start_date}..{end_date}, {use_gcp}, {tags}", flush=True)
 
     if use_gcp:
-        df = waer_coredb_util.query_outputs_postgres(user_id, tags, start_date, end_date)
+        outputs_list = waer_coredb_util.query_outputs_postgres(user_id, tags, start_date, end_date)
+
+        return pd.DataFrame(outputs_list)
     else:
         path_to_data = './outputs/test_data.json'
         data = query_data_json(user_id, tags, start_date, end_date, path_to_data)

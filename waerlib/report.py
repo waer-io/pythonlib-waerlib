@@ -1,7 +1,7 @@
 import pandas as pd
 import json
 from .read import read
-from .repos_core import coredb_outputs as outputs_repo
+from .utils_coredb import waer_coredb_util
 from .waer_time_util import waer_time_util
 
 def query_data_json(user_id, key, start_datetime, end_datetime, path_to_data):
@@ -24,7 +24,7 @@ def query_data_json(user_id, key, start_datetime, end_datetime, path_to_data):
 
     return selection
 
-def get_data(user_id, start_date, end_date, tags, use_gcp = True):
+def get_outputs_data(user_id, start_date, end_date, tags, use_gcp = True):
     """
     generalised function to get data for the display
     allows option of using GCP storage (use_gcp = True) or reading from json
@@ -33,18 +33,13 @@ def get_data(user_id, start_date, end_date, tags, use_gcp = True):
 
     """
 
-    start_ts = waer_time_util.make_nanos(start_date)
-    end_ts = waer_time_util.make_nanos(end_date)
-
-    print(f"Getting data for {user_id}, {start_ts}..{end_ts}, {use_gcp}, {tags}", flush=True)
+    print(f"Getting outputs data for {user_id}, {start_date}..{end_date}, {use_gcp}, {tags}", flush=True)
 
     if use_gcp:
-        df = outputs_repo.getAll(user_id, tags, start_ts, end_ts)
-        df['timestamp'] = df['timestamp'].astype(str)
-        df['val'] = df['val'].apply(lambda x: json.loads(x))
+        df = waer_coredb_util.query_outputs_postgres(user_id, tags, start_date, end_date)
     else:
         path_to_data = './outputs/test_data.json'
-        data = query_data_json(user_id, tags, start_ts, end_ts, path_to_data)
+        data = query_data_json(user_id, tags, start_date, end_date, path_to_data)
         df = pd.DataFrame(data)
     return df
 
@@ -93,7 +88,7 @@ def get_latest_waer_index_value(existing_df):
 
 def get_latest_waer_index_tuple(user_id, start_date, end_date):
     tags = ['waer_index']
-    df = get_data(user_id, start_date, end_date, tags, use_gcp = True)
+    df = get_outputs_data(user_id, start_date, end_date, tags, use_gcp = True)
 
     if len(df) == 0:
         print ('get_latest_waer_index_tuple - No data')
@@ -112,7 +107,7 @@ def get_latest_waer_index_tuple(user_id, start_date, end_date):
 def get_composites_and_filled_data(user_id, start_date, end_date):
     tags = ['sleep_composite','activity_composite','fitness_composite',
            'asleep_minutes_filled','moderate_minutes_filled','resting_heartrate_bpm_filled']
-    df = get_data(user_id, start_date, end_date, tags, use_gcp = True)
+    df = get_outputs_data(user_id, start_date, end_date, tags, use_gcp = True)
     data = df.to_dict(orient = 'records')
 
     return data
@@ -120,7 +115,7 @@ def get_composites_and_filled_data(user_id, start_date, end_date):
 
 def get_composites_data(user_id, start_date, end_date):
     tags = ['sleep_composite','activity_composite','fitness_composite']
-    df = get_data(user_id, start_date, end_date, tags, use_gcp = True)
+    df = get_outputs_data(user_id, start_date, end_date, tags, use_gcp = True)
     data = df.to_dict(orient = 'records')
 
     return data

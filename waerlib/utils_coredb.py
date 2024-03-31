@@ -98,7 +98,7 @@ class waer_coredb_util:
 
 
 
-    # to outputs - seems we use lists everywhere internally.
+    # to list before return - we use lists internally in model, but in coordinator, we use dfs. will need to standardise
     def query_outputs_postgres(user_id, key_or_keys, start_datetime, end_datetime):
         start_timestamp = waer_time_util.make_nanos(start_datetime)
         end_timestamp = waer_time_util.make_nanos(end_datetime)
@@ -147,7 +147,7 @@ class waer_coredb_util:
         parsed_repo.insertBatched(df)
 
 
-
+    # to list before return - we use lists internally in model, but in coordinator, we use dfs. will need to standardise
     def query_parsed_postgres(user_id, key_or_keys, start_datetime, end_datetime):
         start_timestamp = waer_time_util.make_nanos(start_datetime)
         end_timestamp = waer_time_util.make_nanos(end_datetime)
@@ -197,7 +197,7 @@ class waer_coredb_util:
         samples_repo.insertBatched(df)
 
 
-
+    # to list before return - we use lists internally in model, but in coordinator, we use dfs. will need to standardise
     def query_samples_postgres(user_id, key_or_keys, start_datetime, end_datetime):
         start_timestamp = waer_time_util.make_nanos(start_datetime)
         end_timestamp = waer_time_util.make_nanos(end_datetime)
@@ -246,7 +246,7 @@ class waer_coredb_util:
         profiles_repo.insertBatched(df)
 
 
-
+    # to list before return - we use lists internally in model, but in coordinator, we use dfs. will need to standardise
     def query_profiles_postgres(user_id, key_or_keys, start_datetime, end_datetime):
         start_timestamp = waer_time_util.make_nanos(start_datetime)
         end_timestamp = waer_time_util.make_nanos(end_datetime)

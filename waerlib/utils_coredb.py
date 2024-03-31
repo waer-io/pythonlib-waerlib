@@ -1,6 +1,7 @@
 import json
 from datetime import datetime, timedelta, date
 import pandas as pd
+import numpy as np
 from .waer_time_util import waer_time_util
 
 from .repos_core import coredb_outputs as outputs_repo
@@ -36,17 +37,38 @@ class waer_coredb_util:
     def _ensure_nanos_ts(df):
         return df['timestamp'].apply(waer_time_util.make_nanos) # for some reason, some seem nanos, others micros and that causes instability in getting the data. too lazy to investigate one by one.
 
-    def _convert_to_json(record_jsonable):
-        # convert python object to json string
-        return json.dumps(record_jsonable)
 
-    def _convert_from_json(record_jsoned, do_conversion=True):
+    def _convert_to_json(record_maybe_jsonable):
+        # convert python object to json string
+        record_native_python = waer_coredb_util.convert_numpy(record_maybe_jsonable)
+
+        return json.dumps(record_native_python)
+
+
+    def _convert_from_json(record_maybe_jsoned):
         # convert json string to python object
-        # we should probably make profiles val also json, so all vals are just jsons. but not currently.
-        # we still run profiles through here for consistency and to keep this in mind.
-        if not do_conversion:
-            return record_jsoned
-        return json.loads(record_jsoned)
+        # we should probably make all val also json, so all vals are just jsons. but not currently.
+        # we still run all through here for consistency and to keep this in mind.
+
+        try:
+            return json.loads(record_maybe_jsoned)
+        except:
+            return record_maybe_jsoned
+
+
+    def convert_numpy(obj):
+        # ensure python dicts that have numpy data types are converted to jsonable formats.
+        if isinstance(obj, np.integer):
+            return int(obj)
+        elif isinstance(obj, np.floating):
+            return float(obj)
+        elif isinstance(obj, np.ndarray):
+            return obj.tolist()
+        elif isinstance(obj, dict):
+            return {key: waer_coredb_util.convert_numpy(value) for key, value in obj.items()}
+        elif isinstance(obj, (list, tuple)):
+            return [waer_coredb_util.convert_numpy(item) for item in obj]
+        return obj
 
     # from outputs - seems we use lists everywhere internally.
     def write_outputs_postgres(outputs):
@@ -70,6 +92,8 @@ class waer_coredb_util:
             df = df.drop('id', axis=1)
 
         print(df.head())
+#         for value in df['val'].head():
+#             print(value)
 
         df['timestamp'].apply(waer_time_util.enforce_nanos) # one more sanity check that we really are storing-querying nanos before providing it through this layer
         outputs_repo.insertBatched(df)
@@ -245,7 +269,7 @@ class waer_coredb_util:
             return []
         print(df.head())
 
-        df['val'] = df['val'].apply(lambda x: waer_coredb_util._convert_from_json(x, do_conversion=False))
+        df['val'] = df['val'].apply(waer_coredb_util._convert_from_json)
         df['timestamp'] = waer_coredb_util._ensure_nanos_ts(df)
 
         df['timestamp'].apply(waer_time_util.enforce_nanos) # one more sanity check that we really are storing-querying nanos before providing it through this layer

@@ -40,8 +40,12 @@ class waer_coredb_util:
         # convert python object to json string
         return json.dumps(record_jsonable)
 
-    def _convert_from_json(record_jsoned):
+    def _convert_from_json(record_jsoned, do_conversion=True):
         # convert json string to python object
+        # we should probably make profiles val also json, so all vals are just jsons. but not currently.
+        # we still run profiles through here for consistency and to keep this in mind.
+        if not do_conversion:
+            return record_jsoned
         return json.loads(record_jsoned)
 
     # from outputs - seems we use lists everywhere internally.
@@ -241,7 +245,7 @@ class waer_coredb_util:
             return []
         print(df.head())
 
-        df['val'] = df['val'].apply(waer_coredb_util._convert_from_json)
+        df['val'] = df['val'].apply(lambda x: waer_coredb_util._convert_from_json(x, do_conversion=False))
         df['timestamp'] = waer_coredb_util._ensure_nanos_ts(df)
 
         df['timestamp'].apply(waer_time_util.enforce_nanos) # one more sanity check that we really are storing-querying nanos before providing it through this layer

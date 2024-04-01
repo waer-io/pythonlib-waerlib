@@ -72,13 +72,13 @@ class waer_coredb_util:
 
     # from outputs - seems we use lists everywhere internally.
     def write_outputs_postgres(outputs):
-        print(f"------------------ write_outputs_postgres - writing outputs ------------------ ")
+        print(f"------------------ write_outputs_postgres - writing outputs ------------------ ", flush=True)
         df = waer_coredb_util._ensure_dataframe(outputs)
 
-        print("... write_outputs_postgres. columns")
+        print("... write_outputs_postgres. columns", flush=True)
         print(df.columns)
-        print("... write_outputs_postgres. unique keys to be written")
-        print(df['key'].unique())
+        print("... write_outputs_postgres. unique keys to be written", flush=True)
+        print(df['key'].unique(), flush=True)
 
         df['timestamp'] = waer_coredb_util._ensure_nanos_ts(df)
         df['val'] = df['val'].apply(waer_coredb_util._convert_to_json)
@@ -89,9 +89,7 @@ class waer_coredb_util:
         if 'id' in df.columns:
             df = df.drop('id', axis=1)
 
-        print(df.head())
-#         for value in df['val'].head():
-#             print(value)
+        print(df.head(), flush=True)
 
         df['timestamp'].apply(waer_time_util.enforce_nanos) # one more sanity check that we really are storing-querying nanos before providing it through this layer
         outputs_repo.insertBatched(df)
@@ -105,14 +103,14 @@ class waer_coredb_util:
         keys = waer_coredb_util._to_coll_if_not(key_or_keys)
         user_id_wrapped = waer_coredb_util.wrap_user_id_prefix_if_not(user_id)
 
-        print(f"query_outputs_postgres - {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})")
+        print(f"query_outputs_postgres - {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})", flush=True)
 
         df = outputs_repo.getAll(user_id_wrapped, keys, start_timestamp, end_timestamp)
 
         if df.empty:
-            print(f"query_outputs_postgres - No results for {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})")
+            print(f"query_outputs_postgres - No results for {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})", flush=True)
             return []
-        print(df.head())
+        print(df.head(), flush=True)
 
         df['val'] = df['val'].apply(waer_coredb_util._convert_from_json)
         df['timestamp'] = waer_coredb_util._ensure_nanos_ts(df)
@@ -125,13 +123,13 @@ class waer_coredb_util:
     def write_parsed_postgres(parsed):
         # THIS IS NEVER USED IN MODEL!
         # this is used in ingest
-        print(f"------------------ write_parsed_postgres - writing parsed ------------------ ")
+        print(f"------------------ write_parsed_postgres - writing parsed ------------------ ", flush=True)
         df = waer_coredb_util._ensure_dataframe(parsed)
 
-        print("... write_parsed_postgres. columns")
+        print("... write_parsed_postgres. columns", flush=True)
         print(df.columns)
-        print("... write_parsed_postgres. unique keys to be written")
-        print(df['key'].unique())
+        print("... write_parsed_postgres. unique keys to be written", flush=True)
+        print(df['key'].unique(), flush=True)
 
         df['timestamp'] = waer_coredb_util._ensure_nanos_ts(df)
         df['val'] = df['val'].apply(waer_coredb_util._convert_to_json)
@@ -141,7 +139,7 @@ class waer_coredb_util:
         if 'id' in df.columns:
             df = df.drop('id', axis=1)
 
-        print(df.head())
+        print(df.head(), flush=True)
 
         df['timestamp'].apply(waer_time_util.enforce_nanos) # one more sanity check that we really are storing-querying nanos before providing it through this layer
         parsed_repo.insertBatched(df)
@@ -154,14 +152,14 @@ class waer_coredb_util:
         keys = waer_coredb_util._to_coll_if_not(key_or_keys)
         user_id_wrapped = waer_coredb_util.wrap_user_id_prefix_if_not(user_id)
 
-        print(f"query_parsed_postgres - {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})")
+        print(f"query_parsed_postgres - {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})", flush=True)
 
         df = parsed_repo.getAll(user_id_wrapped, keys, start_timestamp, end_timestamp)
 
         if df.empty:
-            print(f"query_parsed_postgres - No results for {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})")
+            print(f"query_parsed_postgres - No results for {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})", flush=True)
             return []
-        print(df.head())
+        print(df.head(), flush=True)
 
         df['val'] = df['val'].apply(waer_coredb_util._convert_from_json)
         df['timestamp'] = waer_coredb_util._ensure_nanos_ts(df)
@@ -174,14 +172,14 @@ class waer_coredb_util:
     def write_samples_postgres(samples):
         # THIS IS NEVER USED IN MODEL!
         # this is used in ingest
-        print(f"------------------ write_samples_postgres - writing samples ------------------ ")
+        print(f"------------------ write_samples_postgres - writing samples ------------------ ", flush=True)
         df = waer_coredb_util._ensure_dataframe(samples)
 
 
-        print("... write_samples_postgres. columns")
-        print(df.columns)
-        print("... write_samples_postgres. unique keys to be written")
-        print(df['key'].unique())
+        print("... write_samples_postgres. columns", flush=True)
+        print(df.columns, flush=True)
+        print("... write_samples_postgres. unique keys to be written", flush=True)
+        print(df['key'].unique(), flush=True)
 
         df['timestamp'] = waer_coredb_util._ensure_nanos_ts(df)
         df['val'] = df['val'].apply(waer_coredb_util._convert_to_json)
@@ -191,7 +189,7 @@ class waer_coredb_util:
         if 'id' in df.columns:
             df = df.drop('id', axis=1)
 
-        print(df.head())
+        print(df.head(), flush=True)
 
         df['timestamp'].apply(waer_time_util.enforce_nanos) # one more sanity check that we really are storing-querying nanos before providing it through this layer
         samples_repo.insertBatched(df)
@@ -204,14 +202,14 @@ class waer_coredb_util:
         keys = waer_coredb_util._to_coll_if_not(key_or_keys)
         user_id_wrapped = waer_coredb_util.wrap_user_id_prefix_if_not(user_id)
 
-        print(f"query_samples_postgres - {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})")
+        print(f"query_samples_postgres - {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})", flush=True)
 
         df = samples_repo.getAll(user_id_wrapped, keys, start_timestamp, end_timestamp)
 
         if df.empty:
-            print(f"query_samples_postgres - No results for {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})")
+            print(f"query_samples_postgres - No results for {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})", flush=True)
             return []
-        print(df.head())
+        print(df.head(), flush=True)
 
         df['val'] = df['val'].apply(waer_coredb_util._convert_from_json)
         df['timestamp'] = waer_coredb_util._ensure_nanos_ts(df)
@@ -224,13 +222,13 @@ class waer_coredb_util:
     def write_profiles_postgres(profiles):
         # THIS IS NEVER USED IN MODEL!
         # this is used in ingest
-        print(f"------------------ write_profiles_postgres - writing profiles ------------------ ")
+        print(f"------------------ write_profiles_postgres - writing profiles ------------------ ", flush=True)
         df = waer_coredb_util._ensure_dataframe(profiles)
 
-        print("... write_profiles_postgres. columns")
-        print(df.columns)
-        print("... write_profiles_postgres. unique keys to be written")
-        print(df['key'].unique())
+        print("... write_profiles_postgres. columns", flush=True)
+        print(df.columns, flush=True)
+        print("... write_profiles_postgres. unique keys to be written", flush=True)
+        print(df['key'].unique(), flush=True)
 
         df['timestamp'] = waer_coredb_util._ensure_nanos_ts(df)
         df['val'] = df['val'].apply(waer_coredb_util._convert_to_json)
@@ -240,7 +238,7 @@ class waer_coredb_util:
         if 'id' in df.columns:
             df = df.drop('id', axis=1)
 
-        print(df.head())
+        print(df.head(), flush=True)
 
         df['timestamp'].apply(waer_time_util.enforce_nanos) # one more sanity check that we really are storing-querying nanos before providing it through this layer
         profiles_repo.insertBatched(df)
@@ -253,14 +251,14 @@ class waer_coredb_util:
         keys = waer_coredb_util._to_coll_if_not(key_or_keys)
         user_id_wrapped = waer_coredb_util.wrap_user_id_prefix_if_not(user_id)
 
-        print(f"query_profiles_postgres - {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})")
+        print(f"query_profiles_postgres - {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})", flush=True)
 
         df = profiles_repo.getAll(user_id_wrapped, keys, start_timestamp, end_timestamp)
 
         if df.empty:
-            print(f"query_profiles_postgres - No results for {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})")
+            print(f"query_profiles_postgres - No results for {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})", flush=True)
             return []
-        print(df.head())
+        print(df.head(), flush=True)
 
         df['val'] = df['val'].apply(waer_coredb_util._convert_from_json)
         df['timestamp'] = waer_coredb_util._ensure_nanos_ts(df)
@@ -289,5 +287,5 @@ class waer_coredb_util:
         elif isinstance(input_collection, list):
             return pd.DataFrame(input_collection)
         else:
-            print(f"----------- UNEXPECTED ---------- {type(input_collection)} is not a list or a df. Trying to wrap in df anyway.")
+            print(f"----------- UNEXPECTED ---------- {type(input_collection)} is not a list or a df. Trying to wrap in df anyway.", flush=True)
             return pd.DataFrame(input_collection)

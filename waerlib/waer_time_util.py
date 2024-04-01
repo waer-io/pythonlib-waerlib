@@ -32,7 +32,7 @@ class waer_time_util:
             out = waer_time_util.make_nanos(out)
 
         if not isinstance(out, int):
-            print(f"----------------- UNEXPECTED ----------------- was instance for {out} of {type(out)}")
+            print(f"----------------- UNEXPECTED ----------------- was instance for {out} of {type(out)}", flush=True)
 
         return out
 
@@ -150,11 +150,11 @@ class waer_time_util:
             dt2 = waer_time_util.make_nanos(dt2)
 
         if not isinstance(dt1, int) or not isinstance(dt2, int):
-            print(f"-------------------- UNEXPECTED -------------------- comparing equals: {dt1} == {dt2} ({type(dt1)} and {type(dt2)})")
+            print(f"-------------------- UNEXPECTED -------------------- comparing equals: {dt1} == {dt2} ({type(dt1)} and {type(dt2)})", flush=True)
 
 
         if not len(str(dt1)) == 19 or not len(str(dt2)) == 19:
-            print(f"-------------------- UNEXPECTED -------------------- comparing equals lens: {dt1} == {dt2} ({type(dt1)} and {type(dt2)})")
+            print(f"-------------------- UNEXPECTED -------------------- comparing equals lens: {dt1} == {dt2} ({type(dt1)} and {type(dt2)})", flush=True)
 
         return dt1 == dt2
 

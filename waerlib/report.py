@@ -62,7 +62,7 @@ def _get_latest_composite_value(existing_df):
     df = existing_df
 
     if len(df) == 0:
-        print('_get_latest_composite_value - No data')
+        print('_get_latest_composite_value - No data', flush=True)
         return None
 
     df = df.sort_values(by = 'timestamp')
@@ -71,7 +71,7 @@ def _get_latest_composite_value(existing_df):
         latest_value = latest_val['scaled_outputs']['scaled_estimate']['mu']
         return round(latest_value, 1)
     else:
-        print('Required data not found')
+        print('Required data not found', flush=True)
         return None
 
 
@@ -79,7 +79,7 @@ def get_latest_waer_index_value(existing_df):
     df = existing_df[existing_df['key'] == 'waer_index']
 
     if len(df) == 0:
-        print('get_latest_waer_index_value - No data')
+        print('get_latest_waer_index_value - No data', flush=True)
         return None
 
     df = df.sort_values(by = 'timestamp')

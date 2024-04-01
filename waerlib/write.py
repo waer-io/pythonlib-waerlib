@@ -91,3 +91,5 @@ def store_raw_with_reuse_client(data, user_id, msg_type = ""):
     with blob.open(mode='w') as f:
         f.write(json.dumps(data))
 
+    return fname # return the final filename out
+

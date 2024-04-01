@@ -45,7 +45,7 @@ def _get_raw_key(user_id, msg_type = "unk_msg"):
     random_component = str(uuid.uuid4())[:8]
 
     raw_key = 'raw/terraUID2'
-    raw_key = f"{raw_key}-{date_time_component}-{user_id}-{msg_type}-{random_component}"
+    raw_key = f"{raw_key}-{user_id}-{msg_type}-{date_time_component}-{random_component}"
 
     return raw_key
 

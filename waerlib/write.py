@@ -28,6 +28,27 @@ def validate_df(df):
     
     return df
 
+def _get_raw_key(user_id, msg_type = "unk_msg"):
+    now = datetime.now()
+
+    # Year as four digits
+    year = f"{now.year:04d}"
+
+    # Other as two digits
+    month = f"{now.month:02d}"
+    day = f"{now.day:02d}"
+    hour = f"{now.hour:02d}"
+    minute = f"{now.minute:02d}"
+    second = f"{now.second:02d}"
+
+    date_time_component = f"{year}_{month}_{day}_{hour}_{minute}_{second}"
+    random_component = str(uuid.uuid4())[:8]
+
+    raw_key = 'raw/terraUID2'
+    raw_key = f"{raw_key}-{date_time_component}-{user_id}-{msg_type}-{random_component}"
+
+    return raw_key
+
 def write(user_id, df, folder):
     df = validate_df(df)
     df.loc[:,'user_id'] = user_id
@@ -82,14 +103,10 @@ def store_raw_with_reuse_client(data, user_id, msg_type = ""):
 
     bucket = storage_client_reused.get_bucket(os.environ['GCP_BUCKET_NAME'])
 
-    fname = str(uuid.uuid4())
-    if user_id:
-        fname = 'terraUID-' + user_id + "-"+ msg_type + '~' + fname
-    fname = 'raw/' + fname
+    fname = _get_raw_key(user_id, msg_type)
 
     blob = bucket.blob(fname)
     with blob.open(mode='w') as f:
         f.write(json.dumps(data))
 
     return fname # return the final filename out
-

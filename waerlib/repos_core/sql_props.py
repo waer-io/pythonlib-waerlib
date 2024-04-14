@@ -2,7 +2,9 @@ import os
 
 def get_sql_url(local=False):
 
-    if local:
+    local = os.environ.get("IS_LOCAL")
+
+    if local is not None and local.lower() == "true":
         return get_local_sql_url()
 
     sql_url = 'postgresql://{username}:{password}@{hostname}/{database}'.format(

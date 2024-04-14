@@ -3,7 +3,7 @@ from datetime import date, datetime, timedelta
 import pandas as pd
 from pandas import Timestamp
 import numpy as np
-
+import time
 
 date_format = '%Y-%m-%d'
 datetime_format = '%Y-%m-%d %H:%M:%S'
@@ -76,7 +76,7 @@ class waer_time_util:
         datelist = waer_time_util.get_date_list(start_date, end_date)
         return [datetime.strftime(date, date_format) for date in datelist]
 
-    def get_date_list(start_date, end_date, local=False):
+    def get_date_list(start_date, end_date):
         """
         start_date and end_date are date strings with format "%Y-%m-%d"
         returns a list of dates
@@ -86,11 +86,15 @@ class waer_time_util:
         start_dt = pd.to_datetime(start_date)
         end_dt = pd.to_datetime(end_date)
 
-        if local:
-            # added day because the list will otherwise start one day too late and end one day too early.
-            # assuming we have inclusive ending date. remove that part if not.
-            start_dt = start_dt + pd.Timedelta(days=1)
-            end_dt = end_dt + pd.Timedelta(days=1)
+        # this part makes the code work locally as well. Otherwise
+        # the offsets mess stuff up and we get either exceptions or
+        # global priors instead.
+        # This is unnecessary for remote, where the timezones are UTC
+        # but we are in different timezones and want to work on the
+        # remote UTC timestamped data locally.
+        # PS! assumption is that the timestamps in databases are always UTC!
+        start_dt = waer_time_util.adjust_to_utc_if_needed(start_dt)
+        end_dt = waer_time_util.adjust_to_utc_if_needed(end_dt)
 
 
 
@@ -98,6 +102,10 @@ class waer_time_util:
         date_list = [dt.date() for dt in L]
 
         return date_list
+
+
+
+
 
     def get_df_ts_as_date_blind(df):
         return df['timestamp'].astype(str).str[:10]
@@ -263,3 +271,20 @@ class waer_time_util:
                 pass
 
         raise ValueError(f'Unknown datetime format: {dt_string}')
+
+    # from the time on the machine this code is running on
+    def _get_offset_hours_from_utc():
+        utc_offset_seconds = time.timezone if (time.localtime().tm_isdst == 0) else time.altzone
+        return utc_offset_seconds / (60 * 60)
+
+
+    # accepts something like: pd.to_datetime("2024-01-13") for example.
+    # adjustment is with minus, as it looks at UTC from the current timezone.
+    # eg in CPH, UTC+2 for summer, the get_offset_hours_from_utc will return -2
+    # this function allows working on local machine using the UTC data.
+    # so we can directly work with a remote database while still in development.
+    def adjust_to_utc_if_needed(pandas_datetime):
+        offset_hours = waer_time_util._get_offset_hours_from_utc()
+        adjusted = pandas_datetime - pd.Timedelta(hours=offset_hours)
+        return adjusted
+

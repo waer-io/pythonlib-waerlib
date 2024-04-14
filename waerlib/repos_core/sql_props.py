@@ -1,6 +1,6 @@
 import os
 
-def get_sql_url(local=False):
+def get_sql_url():
 
     local = os.environ.get("IS_LOCAL")
 

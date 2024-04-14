@@ -1,10 +1,13 @@
 import os
 
+LOCAL = os.environ.get("IS_LOCAL")
+IS_LOCAL = LOCAL is not None and LOCAL.lower() == "true"
+
 def get_sql_url():
 
-    local = os.environ.get("IS_LOCAL")
-
-    if local is not None and local.lower() == "true":
+    # checks if code is running locally, and
+    # adjusts the query string appropriately
+    if IS_LOCAL:
         return get_local_sql_url()
 
     sql_url = 'postgresql://{username}:{password}@{hostname}/{database}'.format(

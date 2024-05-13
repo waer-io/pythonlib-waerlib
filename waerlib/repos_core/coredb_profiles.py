@@ -37,7 +37,11 @@ def insertBatched(df):
 def _printQuery(query, session):
     compiled_query = query.statement.compile(session.bind)
     params = compiled_query.params
-    sql_query_with_values = compiled_query.string % params
+    keys_str = ', '.join(map(repr, keys))
+    sql_query_with_values = compiled_query.string % {
+        **params,
+        'keys': keys_str
+    }
     print("Constructed SQL Query:", sql_query_with_values)
 
 # todo. might want an index on those for all tables?

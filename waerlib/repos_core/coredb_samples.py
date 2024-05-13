@@ -34,8 +34,10 @@ def insertBatched(df):
             df.to_sql(Samples.__tablename__, con=session.bind, if_exists='append', index=False, chunksize=1000)
 
 def _printQuery(query, session):
-    sql_query = query.statement.compile(session.bind)
-    print("Constructed SQL Query:", sql_query)
+    compiled_query = query.statement.compile(session.bind)
+    params = compiled_query.params
+    sql_query_with_values = compiled_query.string % params
+    print("Constructed SQL Query:", sql_query_with_values)
 
 # todo. might want an index on those for all tables?
 def getAll(user_id, keys, start_timestamp, end_timestamp):

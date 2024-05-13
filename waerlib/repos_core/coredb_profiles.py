@@ -34,7 +34,7 @@ def insertBatched(df):
         with session.begin():
             df.to_sql(Profiles.__tablename__, con=session.bind, if_exists='append', index=False, chunksize=1000)
 
-def _printQuery(query, session):
+def _printQuery(query, session, keys):
     compiled_query = query.statement.compile(session.bind)
     params = compiled_query.params
     keys_str = ', '.join(map(repr, keys))
@@ -54,5 +54,5 @@ def getAll(user_id, keys, start_timestamp, end_timestamp):
             Profiles.timestamp <= end_timestamp,
         )
 
-        _printQuery(query, session)
+        _printQuery(query, session, keys)
         return pd.read_sql(query.statement, session.bind)

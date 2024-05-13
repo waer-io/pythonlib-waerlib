@@ -43,4 +43,10 @@ def getAll(user_id, keys, start_timestamp, end_timestamp):
             Profiles.timestamp >= start_timestamp,
             Profiles.timestamp <= end_timestamp,
         )
+
+        _printQuery(query, session)
         return pd.read_sql(query.statement, session.bind)
+
+def _printQuery(query, session):
+    sql_query = query.statement.compile(session.bind)
+    print("Constructed SQL Query:", sql_query)

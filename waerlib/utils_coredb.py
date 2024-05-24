@@ -11,6 +11,13 @@ from .repos_core import coredb_samples as samples_repo
 
 
 
+LOCAL_JUPYTER = os.environ.get("IS_LOCAL_JUPYTER")
+IS_LOCAL_JUPYTER = LOCAL_JUPYTER is not None and LOCAL_JUPYTER.lower() == "true"
+
+USER_INPUT_PATH_IF_LOCAL_JUPYTER = os.environ.get("USER_INPUT_PATH_IF_LOCAL_JUPYTER")
+USER_OUTPUT_PATH_IF_LOCAL_JUPYTER = os.environ.get("USER_OUTPUT_PATH_IF_LOCAL_JUPYTER")
+
+
 class waer_coredb_util:
     """
         postgres core db utilities.
@@ -92,7 +99,11 @@ class waer_coredb_util:
         print(df.head(), flush=True)
 
         df['timestamp'].apply(waer_time_util.enforce_nanos) # one more sanity check that we really are storing-querying nanos before providing it through this layer
-        outputs_repo.insertBatched(df)
+
+        if IS_LOCAL_JUPYTER: # locally to json
+            write_local_output_json(df, "outputs")
+        else: # remotely
+            outputs_repo.insertBatched(df)
 
 
 
@@ -105,7 +116,10 @@ class waer_coredb_util:
 
         print(f"query_outputs_postgres - {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})", flush=True)
 
-        df = outputs_repo.getAll(user_id_wrapped, keys, start_timestamp, end_timestamp)
+        if IS_LOCAL_JUPYTER: # locally from json
+            df = query_local_input_csv("outputs")
+        else: # remotely
+            df = outputs_repo.getAll(user_id_wrapped, keys, start_timestamp, end_timestamp)
 
         if df.empty:
             print(f"query_outputs_postgres - No results for {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})", flush=True)
@@ -116,9 +130,7 @@ class waer_coredb_util:
         df['timestamp'] = waer_coredb_util._ensure_nanos_ts(df)
 
         df['timestamp'].apply(waer_time_util.enforce_nanos) # one more sanity check that we really are storing-querying nanos before providing it through this layer
-        return df.to_dict(orient='records')
-
-
+        return waer_coredb_util.dataframe_to_dict(df)
 
     def write_parsed_postgres(parsed):
         # THIS IS NEVER USED IN MODEL!
@@ -142,7 +154,11 @@ class waer_coredb_util:
         print(df.head(), flush=True)
 
         df['timestamp'].apply(waer_time_util.enforce_nanos) # one more sanity check that we really are storing-querying nanos before providing it through this layer
-        parsed_repo.insertBatched(df)
+
+        if IS_LOCAL_JUPYTER: # locally to json
+            write_local_output_json(df, "parsed")
+        else: # remotely
+            parsed_repo.insertBatched(df)
 
 
     # to list before return - we use lists internally in model, but in coordinator, we use dfs. will need to standardise
@@ -154,7 +170,10 @@ class waer_coredb_util:
 
         print(f"query_parsed_postgres - {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})", flush=True)
 
-        df = parsed_repo.getAll(user_id_wrapped, keys, start_timestamp, end_timestamp)
+        if IS_LOCAL_JUPYTER: # locally from json
+            df = query_local_input_csv("parsed")
+        else: # remotely
+            df = parsed_repo.getAll(user_id_wrapped, keys, start_timestamp, end_timestamp)
 
         if df.empty:
             print(f"query_parsed_postgres - No results for {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})", flush=True)
@@ -165,7 +184,7 @@ class waer_coredb_util:
         df['timestamp'] = waer_coredb_util._ensure_nanos_ts(df)
 
         df['timestamp'].apply(waer_time_util.enforce_nanos) # one more sanity check that we really are storing-querying nanos before providing it through this layer
-        return df.to_dict(orient='records')
+        return waer_coredb_util.dataframe_to_dict(df)
 
 
 
@@ -192,7 +211,11 @@ class waer_coredb_util:
         print(df.head(), flush=True)
 
         df['timestamp'].apply(waer_time_util.enforce_nanos) # one more sanity check that we really are storing-querying nanos before providing it through this layer
-        samples_repo.insertBatched(df)
+
+        if IS_LOCAL_JUPYTER: # locally to json
+            write_local_output_json(df, "samples")
+        else: # remotely
+            samples_repo.insertBatched(df)
 
 
     # to list before return - we use lists internally in model, but in coordinator, we use dfs. will need to standardise
@@ -204,7 +227,10 @@ class waer_coredb_util:
 
         print(f"query_samples_postgres - {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})", flush=True)
 
-        df = samples_repo.getAll(user_id_wrapped, keys, start_timestamp, end_timestamp)
+        if IS_LOCAL_JUPYTER: # locally from json
+            df = query_local_input_csv("samples")
+        else: # remotely
+            df = samples_repo.getAll(user_id_wrapped, keys, start_timestamp, end_timestamp)
 
         if df.empty:
             print(f"query_samples_postgres - No results for {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})", flush=True)
@@ -215,7 +241,7 @@ class waer_coredb_util:
         df['timestamp'] = waer_coredb_util._ensure_nanos_ts(df)
 
         df['timestamp'].apply(waer_time_util.enforce_nanos) # one more sanity check that we really are storing-querying nanos before providing it through this layer
-        return df.to_dict(orient='records')
+        return waer_coredb_util.dataframe_to_dict(df)
 
 
 
@@ -241,7 +267,11 @@ class waer_coredb_util:
         print(df.head(), flush=True)
 
         df['timestamp'].apply(waer_time_util.enforce_nanos) # one more sanity check that we really are storing-querying nanos before providing it through this layer
-        profiles_repo.insertBatched(df)
+
+        if IS_LOCAL_JUPYTER: # locally to json
+            write_local_output_json(df, "profiles")
+        else: # remotely
+            profiles_repo.insertBatched(df)
 
 
     # to list before return - we use lists internally in model, but in coordinator, we use dfs. will need to standardise
@@ -253,7 +283,10 @@ class waer_coredb_util:
 
         print(f"query_profiles_postgres - {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})", flush=True)
 
-        df = profiles_repo.getAll(user_id_wrapped, keys, start_timestamp, end_timestamp)
+        if IS_LOCAL_JUPYTER: # locally from json
+            df = query_local_input_csv("profiles")
+        else: # remotely
+            df = profiles_repo.getAll(user_id_wrapped, keys, start_timestamp, end_timestamp)
 
         if df.empty:
             print(f"query_profiles_postgres - No results for {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})", flush=True)
@@ -264,7 +297,7 @@ class waer_coredb_util:
         df['timestamp'] = waer_coredb_util._ensure_nanos_ts(df)
 
         df['timestamp'].apply(waer_time_util.enforce_nanos) # one more sanity check that we really are storing-querying nanos before providing it through this layer
-        return df.to_dict(orient='records')
+        return waer_coredb_util.dataframe_to_dict(df)
 
 
     def wrap_user_id_prefix_if_not(user_id):
@@ -289,3 +322,40 @@ class waer_coredb_util:
         else:
             print(f"----------- UNEXPECTED ---------- {type(input_collection)} is not a list or a df. Trying to wrap in df anyway.", flush=True)
             return pd.DataFrame(input_collection)
+
+
+    def query_local_input_csv(table_name):
+        path_to_data = USER_INPUT_PATH_IF_LOCAL_JUPYTER
+        print(f"DEBUG query_local_input_csv - querying {table_name}, {path_to_data}")
+
+        with open(path_to_data,'r') as f:
+              df = pd.read_csv(f)
+        print(f"DEBUG query_local_input_csv - querying {table_name}, {path_to_data}, received data: {df}")
+        return df
+
+
+    def write_local_output_json(output_data_df, table_name):
+        path_to_data = USER_OUTPUT_PATH_IF_LOCAL_JUPYTER
+        output_data = waer_coredb_util.dataframe_to_json(output_data_df)
+        print(f"DEBUG write_local_output_json - writing {table_name}, {path_to_data} data: {output_data}")
+
+        with open(path_to_data, 'r') as f_in:
+            data = json.load(f_in)
+
+        data.extend(output_data)
+
+        with open(path_to_data, 'w') as f_out:
+            json.dump(data, f_out)
+
+        return None
+
+
+    def dataframe_to_json(df):
+        return df.to_json(orient='records')})
+
+    def dataframe_to_dict(df):
+        return df.to_dict(orient='records')
+
+    def json_to_dataframe(json):
+        return pd.DataFrame(json)
+

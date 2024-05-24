@@ -358,15 +358,15 @@ class waer_coredb_util:
         else:
             raise ValueError(f"------------------- UNEXPECTED: tried to write non- outputs locally. {table_name}, data: {output_data_df}")
         output_data = waer_coredb_util.dataframe_to_dict(output_data_df)
-        print(f"DEBUG write_local_output_json - writing {table_name}, {path_to_data} data: {output_data}")
+        print(f"DEBUG write_local_output_json - writing {table_name}, {path_to_data} data: {str(output_data)[:1500]} (cut)")
 
         with open(path_to_data, 'r') as f_in:
             data = json.load(f_in)
-            print(f"DEBUG write_local_output_json - writing {table_name}, existing data: {data}")
+            print(f"DEBUG write_local_output_json - writing {table_name}, existing data: {str(data)[:1500]} (cut)")
 
         data.extend(output_data)
 
-        print(f"DEBUG write_local_output_json - writing {table_name}, EXTENDED data: {data}")
+        print(f"DEBUG write_local_output_json - writing {table_name}, EXTENDED data: {str(data)[:1500]} (cut)")
 
         with open(path_to_data, 'w') as f_out:
             json.dump(data, f_out)

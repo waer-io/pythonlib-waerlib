@@ -342,7 +342,8 @@ class waer_coredb_util:
 
         with open(path_to_data,'r') as f:
             if table_name == "outputs":
-                df = pd.read_json(f)
+                data = json.load(f)
+                df = pd.DataFrame(data)
             else:
                 df = pd.read_csv(f)
 

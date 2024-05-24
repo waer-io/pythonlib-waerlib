@@ -348,14 +348,21 @@ class waer_coredb_util:
 
 
     def write_local_output_json(output_data_df, table_name):
-        path_to_data = LOCAL_OUTPUT_OUTPUTS_CSV
+
+        if table_name == "outputs":
+            path_to_data = LOCAL_OUTPUT_OUTPUTS_CSV
+        else:
+            raise ValueError(f"------------------- UNEXPECTED: tried to write non- outputs locally. {table_name}, data: {output_data_df}")
         output_data = waer_coredb_util.dataframe_to_json(output_data_df)
         print(f"DEBUG write_local_output_json - writing {table_name}, {path_to_data} data: {output_data}")
 
         with open(path_to_data, 'r') as f_in:
             data = json.load(f_in)
+            print(f"DEBUG write_local_output_json - writing {table_name}, existing data: {data}")
 
         data.extend(output_data)
+
+        print(f"DEBUG write_local_output_json - writing {table_name}, EXTENDED data: {data}")
 
         with open(path_to_data, 'w') as f_out:
             json.dump(data, f_out)

@@ -15,8 +15,9 @@ from .repos_core import coredb_samples as samples_repo
 LOCAL_JUPYTER = os.environ.get("IS_LOCAL_JUPYTER")
 IS_LOCAL_JUPYTER = LOCAL_JUPYTER is not None and LOCAL_JUPYTER.lower() == "true"
 
-USER_INPUT_PATH_IF_LOCAL_JUPYTER = os.environ.get("USER_INPUT_PATH_IF_LOCAL_JUPYTER")
-USER_OUTPUT_PATH_IF_LOCAL_JUPYTER = os.environ.get("USER_OUTPUT_PATH_IF_LOCAL_JUPYTER")
+LOCAL_INPUT_PARSED_CSV = os.environ.get("LOCAL_INPUT_PARSED_CSV")
+LOCAL_INPUT_PROFILES_CSV = os.environ.get("LOCAL_INPUT_PROFILES_CSV")
+LOCAL_OUTPUT_OUTPUTS_CSV = os.environ.get("LOCAL_OUTPUT_OUTPUTS_CSV")
 
 
 class waer_coredb_util:
@@ -326,7 +327,14 @@ class waer_coredb_util:
 
 
     def query_local_input_csv(table_name):
-        path_to_data = USER_INPUT_PATH_IF_LOCAL_JUPYTER
+
+        if table_name = "parsed":
+            path_to_data = LOCAL_INPUT_PARSED_CSV
+        elif table_name = "profiles":
+            path_to_data = LOCAL_INPUT_PROFILES_CSV
+        else:
+            return df.empty
+
         print(f"DEBUG query_local_input_csv - querying {table_name}, {path_to_data}")
 
         with open(path_to_data,'r') as f:
@@ -336,7 +344,7 @@ class waer_coredb_util:
 
 
     def write_local_output_json(output_data_df, table_name):
-        path_to_data = USER_OUTPUT_PATH_IF_LOCAL_JUPYTER
+        path_to_data = LOCAL_OUTPUT_OUTPUTS_CSV
         output_data = waer_coredb_util.dataframe_to_json(output_data_df)
         print(f"DEBUG write_local_output_json - writing {table_name}, {path_to_data} data: {output_data}")
 

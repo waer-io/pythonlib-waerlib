@@ -119,7 +119,7 @@ class waer_coredb_util:
         print(f"query_outputs_postgres - {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})", flush=True)
 
         if IS_LOCAL_JUPYTER: # locally from json
-            df = waer_coredb_util.query_local_input_csv("outputs")
+            df = waer_coredb_util.query_local_input_data_file("outputs")
         else: # remotely
             df = outputs_repo.getAll(user_id_wrapped, keys, start_timestamp, end_timestamp)
 
@@ -173,7 +173,7 @@ class waer_coredb_util:
         print(f"query_parsed_postgres - {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})", flush=True)
 
         if IS_LOCAL_JUPYTER: # locally from json
-            df = waer_coredb_util.query_local_input_csv("parsed")
+            df = waer_coredb_util.query_local_input_data_file("parsed")
         else: # remotely
             df = parsed_repo.getAll(user_id_wrapped, keys, start_timestamp, end_timestamp)
 
@@ -230,7 +230,7 @@ class waer_coredb_util:
         print(f"query_samples_postgres - {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})", flush=True)
 
         if IS_LOCAL_JUPYTER: # locally from json
-            df = waer_coredb_util.query_local_input_csv("samples")
+            df = waer_coredb_util.query_local_input_data_file("samples")
         else: # remotely
             df = samples_repo.getAll(user_id_wrapped, keys, start_timestamp, end_timestamp)
 
@@ -286,7 +286,7 @@ class waer_coredb_util:
         print(f"query_profiles_postgres - {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})", flush=True)
 
         if IS_LOCAL_JUPYTER: # locally from json
-            df = waer_coredb_util.query_local_input_csv("profiles")
+            df = waer_coredb_util.query_local_input_data_file("profiles")
         else: # remotely
             df = profiles_repo.getAll(user_id_wrapped, keys, start_timestamp, end_timestamp)
 
@@ -326,7 +326,7 @@ class waer_coredb_util:
             return pd.DataFrame(input_collection)
 
 
-    def query_local_input_csv(table_name):
+    def query_local_input_data_file(table_name):
 
         if table_name == "parsed":
             path_to_data = LOCAL_INPUT_PARSED_CSV
@@ -338,12 +338,15 @@ class waer_coredb_util:
         else:
             return waer_coredb_util.empty_dataframe()
 
-        print(f"DEBUG query_local_input_csv - querying {table_name}, {path_to_data}")
+        print(f"DEBUG query_local_input_data_file - querying {table_name}, {path_to_data}")
 
         with open(path_to_data,'r') as f:
-            df = pd.read_csv(f)
+            if table_name == "outputs":
+                df = pd.read_json(f)
+            else:
+                df = pd.read_csv(f)
 
-        print(f"DEBUG query_local_input_csv - querying {table_name}, {path_to_data}, received data: {df}")
+        print(f"DEBUG query_local_input_data_file - querying {table_name}, {path_to_data}, received data: {df}")
         return df
 
 

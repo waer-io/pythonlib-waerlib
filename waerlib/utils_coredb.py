@@ -2,6 +2,7 @@ import json
 from datetime import datetime, timedelta, date
 import pandas as pd
 import numpy as np
+import os
 from .waer_time_util import waer_time_util
 
 from .repos_core import coredb_outputs as outputs_repo

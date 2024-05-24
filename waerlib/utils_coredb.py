@@ -333,12 +333,13 @@ class waer_coredb_util:
         elif table_name == "profiles":
             path_to_data = LOCAL_INPUT_PROFILES_CSV
         else:
-            return df.empty
+            return waer_coredb_util.empty_dataframe()
 
         print(f"DEBUG query_local_input_csv - querying {table_name}, {path_to_data}")
 
         with open(path_to_data,'r') as f:
-              df = pd.read_csv(f)
+            df = pd.read_csv(f)
+
         print(f"DEBUG query_local_input_csv - querying {table_name}, {path_to_data}, received data: {df}")
         return df
 
@@ -367,4 +368,7 @@ class waer_coredb_util:
 
     def json_to_dataframe(json):
         return pd.DataFrame(json)
+
+    def empty_dataframe():
+        return pd.DataFrame(columns=['timestamp', 'key', 'val', 'user_id'])
 

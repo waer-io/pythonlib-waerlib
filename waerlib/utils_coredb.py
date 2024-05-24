@@ -102,7 +102,7 @@ class waer_coredb_util:
         df['timestamp'].apply(waer_time_util.enforce_nanos) # one more sanity check that we really are storing-querying nanos before providing it through this layer
 
         if IS_LOCAL_JUPYTER: # locally to json
-            write_local_output_json(df, "outputs")
+            waer_coredb_util.write_local_output_json(df, "outputs")
         else: # remotely
             outputs_repo.insertBatched(df)
 
@@ -118,7 +118,7 @@ class waer_coredb_util:
         print(f"query_outputs_postgres - {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})", flush=True)
 
         if IS_LOCAL_JUPYTER: # locally from json
-            df = query_local_input_csv("outputs")
+            df = waer_coredb_util.query_local_input_csv("outputs")
         else: # remotely
             df = outputs_repo.getAll(user_id_wrapped, keys, start_timestamp, end_timestamp)
 
@@ -157,7 +157,7 @@ class waer_coredb_util:
         df['timestamp'].apply(waer_time_util.enforce_nanos) # one more sanity check that we really are storing-querying nanos before providing it through this layer
 
         if IS_LOCAL_JUPYTER: # locally to json
-            write_local_output_json(df, "parsed")
+            waer_coredb_util.write_local_output_json(df, "parsed")
         else: # remotely
             parsed_repo.insertBatched(df)
 
@@ -172,7 +172,7 @@ class waer_coredb_util:
         print(f"query_parsed_postgres - {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})", flush=True)
 
         if IS_LOCAL_JUPYTER: # locally from json
-            df = query_local_input_csv("parsed")
+            df = waer_coredb_util.query_local_input_csv("parsed")
         else: # remotely
             df = parsed_repo.getAll(user_id_wrapped, keys, start_timestamp, end_timestamp)
 
@@ -214,7 +214,7 @@ class waer_coredb_util:
         df['timestamp'].apply(waer_time_util.enforce_nanos) # one more sanity check that we really are storing-querying nanos before providing it through this layer
 
         if IS_LOCAL_JUPYTER: # locally to json
-            write_local_output_json(df, "samples")
+            waer_coredb_util.write_local_output_json(df, "samples")
         else: # remotely
             samples_repo.insertBatched(df)
 
@@ -229,7 +229,7 @@ class waer_coredb_util:
         print(f"query_samples_postgres - {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})", flush=True)
 
         if IS_LOCAL_JUPYTER: # locally from json
-            df = query_local_input_csv("samples")
+            df = waer_coredb_util.query_local_input_csv("samples")
         else: # remotely
             df = samples_repo.getAll(user_id_wrapped, keys, start_timestamp, end_timestamp)
 
@@ -270,7 +270,7 @@ class waer_coredb_util:
         df['timestamp'].apply(waer_time_util.enforce_nanos) # one more sanity check that we really are storing-querying nanos before providing it through this layer
 
         if IS_LOCAL_JUPYTER: # locally to json
-            write_local_output_json(df, "profiles")
+            waer_coredb_util.write_local_output_json(df, "profiles")
         else: # remotely
             profiles_repo.insertBatched(df)
 
@@ -285,7 +285,7 @@ class waer_coredb_util:
         print(f"query_profiles_postgres - {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})", flush=True)
 
         if IS_LOCAL_JUPYTER: # locally from json
-            df = query_local_input_csv("profiles")
+            df = waer_coredb_util.query_local_input_csv("profiles")
         else: # remotely
             df = profiles_repo.getAll(user_id_wrapped, keys, start_timestamp, end_timestamp)
 

@@ -353,7 +353,7 @@ class waer_coredb_util:
             path_to_data = LOCAL_OUTPUT_OUTPUTS_CSV
         else:
             raise ValueError(f"------------------- UNEXPECTED: tried to write non- outputs locally. {table_name}, data: {output_data_df}")
-        output_data = waer_coredb_util.dataframe_to_json(output_data_df)
+        output_data = waer_coredb_util.dataframe_to_dict(output_data_df)
         print(f"DEBUG write_local_output_json - writing {table_name}, {path_to_data} data: {output_data}")
 
         with open(path_to_data, 'r') as f_in:

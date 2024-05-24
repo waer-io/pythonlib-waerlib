@@ -328,9 +328,9 @@ class waer_coredb_util:
 
     def query_local_input_csv(table_name):
 
-        if table_name = "parsed":
+        if table_name == "parsed":
             path_to_data = LOCAL_INPUT_PARSED_CSV
-        elif table_name = "profiles":
+        elif table_name == "profiles":
             path_to_data = LOCAL_INPUT_PROFILES_CSV
         else:
             return df.empty

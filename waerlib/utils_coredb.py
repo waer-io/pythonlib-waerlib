@@ -332,6 +332,9 @@ class waer_coredb_util:
             path_to_data = LOCAL_INPUT_PARSED_CSV
         elif table_name == "profiles":
             path_to_data = LOCAL_INPUT_PROFILES_CSV
+        elif table_name == "outputs":
+            # model writes to outputs, and then uses it as input as well
+            path_to_data = LOCAL_OUTPUT_OUTPUTS_CSV
         else:
             return waer_coredb_util.empty_dataframe()
 

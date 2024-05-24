@@ -351,7 +351,7 @@ class waer_coredb_util:
 
 
     def dataframe_to_json(df):
-        return df.to_json(orient='records')})
+        return df.to_json(orient='records')
 
     def dataframe_to_dict(df):
         return df.to_dict(orient='records')

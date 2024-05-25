@@ -3,10 +3,10 @@ import pandas as pd
 import sqlalchemy as sa
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-from .sql_props import get_sql_url, get_pool_settings
+from .sql_props import get_engine, get_session
 
-engine = sa.create_engine(get_sql_url(), **get_pool_settings())
-Session = sessionmaker(bind=engine)
+engine = get_engine()
+Session = get_session()
 Base = declarative_base()
 
 """

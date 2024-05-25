@@ -3,7 +3,17 @@ import os
 LOCAL = os.environ.get("IS_LOCAL")
 IS_LOCAL = LOCAL is not None and LOCAL.lower() == "true"
 
+
+LOCAL_JUPYTER = os.environ.get("IS_LOCAL_JUPYTER")
+IS_LOCAL_JUPYTER = LOCAL_JUPYTER is not None and LOCAL_JUPYTER.lower() == "true"
+
 def get_sql_url():
+
+
+    # checks if code is running locally in jupyter, and
+    # avoids using database and uses local files as db.
+    if IS_LOCAL_JUPYTER:
+        return ""
 
     # checks if code is running locally, and
     # adjusts the query string appropriately

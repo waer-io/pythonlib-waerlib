@@ -92,6 +92,8 @@ def get_latest_waer_index_tuple(user_id, start_date, end_date):
     tags = ['waer_index']
     df = get_outputs_data(user_id, start_date, end_date, tags, use_gcp = True)
 
+    df = [df['key'] == 'waer_index'] # ensure really is only this key
+
     if len(df) == 0:
         print ('get_latest_waer_index_tuple - No data')
         return None

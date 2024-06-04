@@ -15,12 +15,17 @@ from .repos_core import coredb_samples as samples_repo
 LOCAL_JUPYTER = os.environ.get("IS_LOCAL_JUPYTER")
 IS_LOCAL_JUPYTER = LOCAL_JUPYTER is not None and LOCAL_JUPYTER.lower() == "true"
 
-LOCAL_INPUT_PARSED_CSV = os.environ.get("LOCAL_INPUT_PARSED_CSV")
-LOCAL_INPUT_PROFILES_CSV = os.environ.get("LOCAL_INPUT_PROFILES_CSV")
-LOCAL_OUTPUT_OUTPUTS_CSV = os.environ.get("LOCAL_OUTPUT_OUTPUTS_CSV")
-
-
 class waer_coredb_util:
+
+    def get_local_input_parsed_csv_path():
+        return os.environ.get("LOCAL_INPUT_PARSED_CSV")
+
+    def get_local_input_profiles_csv_path():
+        return os.environ.get("LOCAL_INPUT_PROFILES_CSV")
+
+    def get_local_output_outputs_csv_path():
+        return os.environ.get("LOCAL_OUTPUT_OUTPUTS_CSV")
+
     """
         postgres core db utilities.
 
@@ -331,12 +336,12 @@ class waer_coredb_util:
         print(f"DEBUG _query_local_input_data_file - reading {table_name}, {user_id}")
 
         if table_name == "parsed":
-            path_to_data = LOCAL_INPUT_PARSED_CSV
+            path_to_data = waer_coredb_util.get_local_input_parsed_csv_path()
         elif table_name == "profiles":
-            path_to_data = LOCAL_INPUT_PROFILES_CSV
+            path_to_data = waer_coredb_util.get_local_input_profiles_csv_path()
         elif table_name == "outputs":
             # model writes to outputs, and then uses it as input as well
-            path_to_data = LOCAL_OUTPUT_OUTPUTS_CSV
+            path_to_data = waer_coredb_util.get_local_output_outputs_csv_path()
         else:
             return waer_coredb_util.empty_dataframe()
 
@@ -360,7 +365,7 @@ class waer_coredb_util:
     def write_local_output_json(output_data_df, table_name):
 
         if table_name == "outputs":
-            path_to_data = LOCAL_OUTPUT_OUTPUTS_CSV
+            path_to_data = waer_coredb_util.get_local_output_outputs_csv_path()
         else:
             raise ValueError(f"------------------- UNEXPECTED: tried to write non- outputs locally. {table_name}, data: {output_data_df}")
         output_data = waer_coredb_util.dataframe_to_dict(output_data_df)

@@ -119,7 +119,7 @@ class waer_coredb_util:
         print(f"query_outputs_postgres - {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})", flush=True)
 
         if IS_LOCAL_JUPYTER: # locally from json
-            df = waer_coredb_util.query_local_input_data_file("outputs")
+            df = waer_coredb_util._query_local_input_data_file("outputs", user_id_wrapped)
         else: # remotely
             df = outputs_repo.getAll(user_id_wrapped, keys, start_timestamp, end_timestamp)
 
@@ -173,7 +173,7 @@ class waer_coredb_util:
         print(f"query_parsed_postgres - {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})", flush=True)
 
         if IS_LOCAL_JUPYTER: # locally from json
-            df = waer_coredb_util.query_local_input_data_file("parsed")
+            df = waer_coredb_util._query_local_input_data_file("parsed", user_id_wrapped)
         else: # remotely
             df = parsed_repo.getAll(user_id_wrapped, keys, start_timestamp, end_timestamp)
 
@@ -230,7 +230,7 @@ class waer_coredb_util:
         print(f"query_samples_postgres - {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})", flush=True)
 
         if IS_LOCAL_JUPYTER: # locally from json
-            df = waer_coredb_util.query_local_input_data_file("samples")
+            df = waer_coredb_util._query_local_input_data_file("samples", user_id_wrapped)
         else: # remotely
             df = samples_repo.getAll(user_id_wrapped, keys, start_timestamp, end_timestamp)
 
@@ -286,7 +286,7 @@ class waer_coredb_util:
         print(f"query_profiles_postgres - {user_id_wrapped}, {keys}, {start_timestamp}..{end_timestamp} ({start_datetime}..{end_datetime})", flush=True)
 
         if IS_LOCAL_JUPYTER: # locally from json
-            df = waer_coredb_util.query_local_input_data_file("profiles")
+            df = waer_coredb_util._query_local_input_data_file("profiles", user_id_wrapped)
         else: # remotely
             df = profiles_repo.getAll(user_id_wrapped, keys, start_timestamp, end_timestamp)
 
@@ -326,7 +326,7 @@ class waer_coredb_util:
             return pd.DataFrame(input_collection)
 
 
-    def query_local_input_data_file(table_name):
+    def _query_local_input_data_file(table_name, user_id):
 
         if table_name == "parsed":
             path_to_data = LOCAL_INPUT_PARSED_CSV
@@ -345,6 +345,8 @@ class waer_coredb_util:
                 df = pd.DataFrame(data)
             else:
                 df = pd.read_csv(f)
+
+        df = df[df['user_id'] == user_id]
 
         return df
 

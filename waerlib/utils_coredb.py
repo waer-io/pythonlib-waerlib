@@ -338,7 +338,6 @@ class waer_coredb_util:
         else:
             return waer_coredb_util.empty_dataframe()
 
-        print(f"DEBUG query_local_input_data_file - querying {table_name}, {path_to_data}")
 
         with open(path_to_data,'r') as f:
             if table_name == "outputs":
@@ -347,7 +346,6 @@ class waer_coredb_util:
             else:
                 df = pd.read_csv(f)
 
-        print(f"DEBUG query_local_input_data_file - querying {table_name}, {path_to_data}, received data: {df}")
         return df
 
 

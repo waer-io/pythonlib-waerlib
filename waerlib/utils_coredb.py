@@ -328,6 +328,8 @@ class waer_coredb_util:
 
     def _query_local_input_data_file(table_name, user_id):
 
+        print(f"DEBUG _query_local_input_data_file - reading {table_name}, {user_id}")
+
         if table_name == "parsed":
             path_to_data = LOCAL_INPUT_PARSED_CSV
         elif table_name == "profiles":
@@ -339,6 +341,8 @@ class waer_coredb_util:
             return waer_coredb_util.empty_dataframe()
 
 
+        print(f"DEBUG _query_local_input_data_file - reading {table_name}, {user_id} path to data: {path_to_data}")
+
         with open(path_to_data,'r') as f:
             if table_name == "outputs":
                 data = json.load(f)
@@ -348,6 +352,8 @@ class waer_coredb_util:
 
         df = df[df['user_id'] == user_id]
 
+        print(f"DEBUG _query_local_input_data_file - read {table_name}, {user_id}, df: ")
+        print(df)
         return df
 
 
